@@ -1,4 +1,4 @@
-# Alexa Voice Memo - Documentation
+# 松蔭（showIN） - Documentation
 
 _Generated from ideanotes project - 2025-07-12_
 
@@ -13,8 +13,7 @@ _Generated from ideanotes project - 2025-07-12_
 ### 🔧 Implementation Guides
 
 - [**setup-guide.md**](setup-guide.md) - 初期セットアップ手順
-- [**lambda-implementation.md**](lambda-implementation.md) - Lambda 実装ガイド
-- [**dynamodb-design.md**](dynamodb-design.md) - DynamoDB 設計詳細
+- [**database-schema.md**](database-schema.md) - データベース設計詳細
 
 ### 🧪 Testing & Deployment
 
@@ -23,8 +22,8 @@ _Generated from ideanotes project - 2025-07-12_
 
 ### 📊 Operations
 
-- [**monitoring-guide.md**](monitoring-guide.md) - モニタリング設定
-- [**security-checklist.md**](security-checklist.md) - セキュリティチェックリスト
+- [**postmortem-20250113.md**](postmortem-20250113.md) - CI/CD実装の反省と教訓
+- [**deployment-checklist.md**](deployment-checklist.md) - デプロイ前チェックリスト
 
 ## 🚀 Quick Start
 

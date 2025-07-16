@@ -1,6 +1,6 @@
 # Web統合計画書 - Express + Lambda Integration
 
-*Alexa Voice Memo Web Pages (Privacy Policy & Terms of Use)*
+*松蔭（showIN） Web Pages (Privacy Policy & Terms of Use)*
 
 ## 🎯 概要
 
@@ -67,7 +67,7 @@ app.get('/health', (req, res) => {
 // Root page (スキル情報)
 app.get('/', (req, res) => {
   res.json({ 
-    name: 'Alexa Voice Memo',
+    name: '松蔭（showIN）',
     version: '1.0.0',
     description: '音声でメモを管理するAlexaスキル'
   });
@@ -125,7 +125,7 @@ this.alexaLambda = new lambda.Function(this, 'Handler', {
 // API Gateway 追加
 const api = new apigateway.RestApi(this, 'WebApi', {
   restApiName: `${projectName}-${environment}-web-api`,
-  description: 'Web pages for Alexa Voice Memo skill',
+  description: 'Web pages for 松蔭（showIN） skill',
   defaultCorsPreflightOptions: {
     allowOrigins: apigateway.Cors.ALL_ORIGINS,
     allowMethods: apigateway.Cors.ALL_METHODS,
@@ -166,7 +166,7 @@ new cdk.CfnOutput(this, 'WebApiUrl', {
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>プライバシーポリシー - Alexa Voice Memo</title>
+    <title>プライバシーポリシー - 松蔭（showIN）</title>
     <style>
         body { font-family: 'Hiragino Sans', 'Yu Gothic', sans-serif; margin: 40px; line-height: 1.6; }
         .container { max-width: 800px; margin: 0 auto; }
@@ -228,7 +228,7 @@ new cdk.CfnOutput(this, 'WebApiUrl', {
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>利用規約 - Alexa Voice Memo</title>
+    <title>利用規約 - 松蔭（showIN）</title>
     <style>
         body { font-family: 'Hiragino Sans', 'Yu Gothic', sans-serif; margin: 40px; line-height: 1.6; }
         .container { max-width: 800px; margin: 0 auto; }

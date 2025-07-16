@@ -1,4 +1,4 @@
-# Alexa Voice Memo - Testing Guide
+# 松蔭（showIN） - Testing Guide
 
 *Generated from ideanotes project - 2025-07-12*
 

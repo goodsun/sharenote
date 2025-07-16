@@ -4,7 +4,7 @@
 
 ## 🎯 Purpose
 
-This document captures lessons learned during the Alexa Voice Memo project setup to help future projects avoid common pitfalls and establish better practices.
+This document captures lessons learned during the 松蔭（showIN） project setup to help future projects avoid common pitfalls and establish better practices.
 
 ## 📚 What We Learned
 

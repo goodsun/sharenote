@@ -2,7 +2,7 @@
 
 ## Overview
 
-Voice Memo Web APIは、Google OAuth2.0認証を使用したRESTful APIです。
+松蔭（showIN） Web APIは、Google OAuth2.0認証を使用したRESTful APIです。
 すべてのエンドポイントは認証が必要で、JWTトークンをBearerトークンとして使用します。
 
 ## Base URL

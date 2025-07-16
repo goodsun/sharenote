@@ -91,7 +91,7 @@ interface RestoreResponse {
 
 1. **ヘッダー**
 
-   - タイトル「Voice Memo」
+   - タイトル「松蔭（showIN）」
    - リフレッシュボタン
 
 2. **メモリスト**

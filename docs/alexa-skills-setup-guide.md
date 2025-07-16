@@ -1,4 +1,4 @@
-# Alexa Voice Memo - Skills Kit 設定ガイド
+# 松蔭（showIN） - Skills Kit 設定ガイド
 
 *作成日: 2025-07-12*
 

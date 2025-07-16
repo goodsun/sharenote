@@ -1,6 +1,6 @@
 # Changelog
 
-All notable changes to the Alexa Voice Memo project will be documented in this file.
+All notable changes to the 松蔭（showIN） project will be documented in this file.
 
 The format is based on [Keep a Changelog](https://keepachangelog.com/en/1.0.0/),
 and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0.html).
@@ -10,7 +10,7 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
 ### 🎉 Initial Release - Production Ready
 
 #### Added
-- **Core Voice Memo Functionality**
+- **Core 松蔭（showIN） Functionality**
   - Add memo via voice command ("牛乳を買うをメモして")
   - Read memos via voice command ("メモを読んで") 
   - Delete memos via voice command ("1番目のメモを削除")

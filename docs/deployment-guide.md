@@ -1,4 +1,4 @@
-# Alexa Voice Memo - Deployment Guide
+# 松蔭（showIN） - Deployment Guide
 
 *Updated after refactoring - 2025-07-15*
 
@@ -180,7 +180,7 @@ npm run test:smoke -- --env prod
 #### GitHub Actions Workflow
 ```yaml
 # .github/workflows/deploy.yml
-name: Deploy Alexa Voice Memo
+name: Deploy 松蔭（showIN）
 
 on:
   push:

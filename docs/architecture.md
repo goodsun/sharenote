@@ -1,4 +1,4 @@
-# Alexa Voice Memo - System Architecture
+# 松蔭（showIN） - System Architecture
 
 *Generated from ideanotes project - 2025-07-12*
 

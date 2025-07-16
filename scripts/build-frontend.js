@@ -9,8 +9,8 @@ const env = process.argv.find(arg => arg.startsWith('--env='))?.split('=')[1] ||
 
 console.log(`Building frontend for environment: ${env}`);
 
-// 環境別の.envファイルを読み込み
-const envFile = `.env.${env}`;
+// .envファイルを読み込み（単一ファイル方式）
+const envFile = '.env';
 if (fs.existsSync(envFile)) {
   require('dotenv').config({ path: envFile });
   console.log(`Loaded config from ${envFile}`);
@@ -27,7 +27,7 @@ const googleClientId = process.env[`GOOGLE_CLIENT_ID_${env.toUpperCase()}`] ||
                       process.env.GOOGLE_CLIENT_ID;
 
 if (!googleClientId) {
-  console.error(`Error: GOOGLE_CLIENT_ID_${env.toUpperCase()} is not set in ${envFile}`);
+  console.error(`Error: GOOGLE_CLIENT_ID_${env.toUpperCase()} is not set in .env file`);
   console.error('Available environment variables:', Object.keys(process.env).filter(k => k.includes('GOOGLE')));
   process.exit(1);
 }
@@ -53,8 +53,8 @@ try {
   apiUrl = apiUrl.replace(/\/$/, '');
 } catch (error) {
   console.error('Error fetching API URL from CloudFormation:', error.message);
-  // フォールバック
-  apiUrl = `https://example.execute-api.ap-northeast-1.amazonaws.com/${env}`;
+  console.error('Please deploy the stack first: cdk deploy showin-' + env);
+  process.exit(1);
 }
 
 // テンプレート置換
@@ -82,5 +82,5 @@ fs.writeFileSync(path.join(buildDir, 'style.css'), fs.readFileSync('public/style
 console.log(`✅ Frontend built successfully to ${buildDir}/`);
 console.log(`   Environment: ${env}`);
 console.log(`   API URL: ${apiUrl}`);
-console.log(`   Google Client ID: ${googleClientId.substring(0, 20)}...`);
+console.log(`   Google Client ID: ${googleClientId.substring(0, 10)}...${googleClientId.substring(googleClientId.length - 4)}`);
 console.log(`   Build Time: ${buildTime}`);

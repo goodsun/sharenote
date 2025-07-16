@@ -21,7 +21,7 @@ This guide explains how to set up Account Linking between your Alexa skill and G
 3. Click **Create Credentials** > **OAuth client ID**
 4. Choose **Web application**
 5. Configure:
-   - **Name**: `Alexa Voice Memo - Account Linking`
+   - **Name**: `松蔭（showIN） - Account Linking`
    - **Authorized redirect URIs**: 
      - Add the three Alexa redirect URIs (you'll get these from Alexa Developer Console in Step 2)
      - Format: `https://pitangui.amazon.com/api/skill/link/[YOUR-VENDOR-ID]`

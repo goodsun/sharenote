@@ -1,4 +1,4 @@
-# Alexa Voice Memo - Development Guide
+# 松蔭（showIN） - Development Guide
 
 *Generated from ideanotes project - 2025-07-12*  
 *Updated with implementation learnings - 2025-07-13*

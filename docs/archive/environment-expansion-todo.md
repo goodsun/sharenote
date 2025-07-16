@@ -1,6 +1,6 @@
 # Environment Expansion TODO List
 
-*Ready-to-execute checklist for scaling Alexa Voice Memo environments*
+*Ready-to-execute checklist for scaling 松蔭（showIN） environments*
 
 ## 🎯 Phase Planning Overview
 
@@ -47,13 +47,13 @@ Future: Add Production Environment 🎯
 
 ### Alexa Integration
 - [ ] **Rename existing dev skill for clarity**
-  - [ ] Rename current skill to "Voice Memo Dev" 
+  - [ ] Rename current skill to "松蔭（showIN） Dev" 
   - [ ] Update invocation name to "ボイスメモ開発版"
   - [ ] Keep existing endpoint unchanged
 
 - [ ] **Create staging Alexa skill**
   - [ ] New skill in Amazon Developer Console
-  - [ ] Name: "Voice Memo Staging" (internal only)
+  - [ ] Name: "松蔭（showIN） Staging" (internal only)
   - [ ] Invocation name: "ボイスメモ検証版"
   - [ ] Configure staging Lambda endpoint
   - [ ] Enable skill for testing devices only
@@ -146,7 +146,7 @@ Future: Add Production Environment 🎯
 
 - [ ] **Production Alexa skill**
   - [ ] Create production skill in Amazon Developer Console
-  - [ ] Name: "Voice Memo" (public name)
+  - [ ] Name: "松蔭（showIN）" (public name)
   - [ ] Invocation name: "ボイスメモ" (simple/memorable)
   - [ ] Configure production Lambda endpoint
   - [ ] Submit for Alexa Skills Store review

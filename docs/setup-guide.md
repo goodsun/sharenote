@@ -1,4 +1,4 @@
-# Alexa Voice Memo - Setup Guide
+# 松蔭（showIN） - Setup Guide
 
 *Generated from ideanotes project - 2025-07-12*
 

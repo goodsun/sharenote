@@ -1,4 +1,4 @@
-# 松蔭（showIN） - Alexa Voice Memo
+# 松蔭（showIN）
 
 「声でつなぐ、家族の知恵」 - 音声でメモを管理し、家族で共有できる Alexa スキル
 
@@ -93,7 +93,7 @@ cdk bootstrap aws://${CDK_ACCOUNT}/${CDK_REGION}
    - **API とサービス** → **OAuth 同意画面** を開く
    - ユーザータイプ: **外部** を選択
    - アプリ情報を入力:
-     - アプリ名: `Voice Memo`
+     - アプリ名: `松蔭（showIN）`
      - ユーザーサポートメール: あなたのメールアドレス
      - 開発者連絡先情報: あなたのメールアドレス
    - スコープは追加不要（基本プロフィールのみ使用）
@@ -101,7 +101,7 @@ cdk bootstrap aws://${CDK_ACCOUNT}/${CDK_REGION}
 4. **認証情報** → **認証情報を作成** → **OAuth クライアント ID**
 5. 以下の設定を行う：
    - アプリケーションの種類: **ウェブアプリケーション**
-   - 名前: `Voice Memo Web`
+   - 名前: `松蔭（showIN） Web`
    - 承認済みの JavaScript 生成元:
      - `http://localhost:8080` （開発用）
      - `http://showin-dev-frontend.s3-website-ap-northeast-1.amazonaws.com` （S3 開発環境）

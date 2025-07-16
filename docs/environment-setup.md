@@ -1,6 +1,6 @@
 # Environment Setup Guide
 
-*Alexa Voice Memo - Environment Management Strategy*
+*松蔭（showIN） - Environment Management Strategy*
 
 ## 🎯 Environment Philosophy
 
@@ -48,22 +48,22 @@ INVITE_CODE_TABLE_NAME=showin-${CDK_ENV}-invite-codes
 📱 Amazon Developer Console Skills:
 
 Current (Phase 1):
-├── "Voice Memo" (dev skill)
+├── "松蔭（showIN）" (dev skill)
 │   ├── Endpoint: showin-dev-handler
 │   ├── Skill ID: amzn1.ask.skill.xxx-dev
 │   ├── 🏠 Personal Echo device testing
 │   └── Command: "アレクサ、ボイスメモを開いて"
 
 Future (Phase 2 - Staging):
-├── "Voice Memo Dev" (renamed for clarity)
-├── "Voice Memo Staging" (new staging skill)
+├── "松蔭（showIN） Dev" (renamed for clarity)
+├── "松蔭（showIN） Staging" (new staging skill)
 │   ├── Endpoint: showin-stg-handler
 │   ├── Skill ID: amzn1.ask.skill.xxx-stg
 │   ├── 🧪 UAT/stakeholder testing
 │   └── Command: "アレクサ、ボイスメモ検証版を開いて"
 
 Future (Phase 3 - Production):
-└── "Voice Memo" (public production skill)
+└── "松蔭（showIN）" (public production skill)
     ├── Endpoint: showin-prod-handler
     ├── Skill ID: amzn1.ask.skill.xxx-prod
     ├── 🌍 Alexa Skills Store public release

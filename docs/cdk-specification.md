@@ -1,4 +1,4 @@
-# Alexa Voice Memo - CDK 実装仕様書
+# 松蔭（showIN） - CDK 実装仕様書
 
 _2025-07-13 - Updated to reflect current implementation_
 
