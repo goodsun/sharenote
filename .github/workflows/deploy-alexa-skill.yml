@@ -25,12 +25,19 @@ jobs:
     - name: Install ASK CLI
       run: npm install -g ask-cli
 
+    - name: Set environment
+      run: |
+        if [ "${{ github.ref }}" = "refs/heads/main" ]; then
+          echo "CDK_ENV=prod" >> $GITHUB_ENV
+        else
+          echo "CDK_ENV=dev" >> $GITHUB_ENV
+        fi
+
     - name: Configure ASK CLI
       env:
-        ASK_ACCESS_TOKEN: ${{ secrets.ASK_ACCESS_TOKEN }}
-        ASK_REFRESH_TOKEN: ${{ secrets.ASK_REFRESH_TOKEN }}
-        ASK_VENDOR_ID: ${{ secrets.ASK_VENDOR_ID }}
-        SKILL_ID: ${{ secrets.ALEXA_SKILL_ID }}
+        ASK_ACCESS_TOKEN: ${{ secrets.ALEXA_ACCESS_TOKEN }}
+        ASK_REFRESH_TOKEN: ${{ secrets.ALEXA_REFRESH_TOKEN }}
+        ASK_VENDOR_ID: ${{ secrets.ALEXA_VENDOR_ID }}
       run: |
         # Create ASK CLI config
         mkdir -p ~/.ask
@@ -52,9 +59,18 @@ jobs:
         EOF
 
     - name: Deploy Interaction Model
-      env:
-        SKILL_ID: ${{ secrets.ALEXA_SKILL_ID }}
       run: |
+        # Set skill ID based on environment
+        if [ "${{ env.CDK_ENV }}" = "prod" ]; then
+          SKILL_ID="${{ secrets.ALEXA_SKILL_ID_PROD }}"
+        else
+          SKILL_ID="${{ secrets.ALEXA_SKILL_ID_DEV }}"
+        fi
+        
+        if [ -z "$SKILL_ID" ]; then
+          echo "Error: ALEXA_SKILL_ID_${CDK_ENV^^} is not set in GitHub Secrets"
+          exit 1
+        fi
         # Deploy the interaction model
         ask smapi update-interaction-model \
           --skill-id ${SKILL_ID} \
@@ -74,4 +90,8 @@ jobs:
     - name: Deploy complete
       run: |
         echo "✅ Alexa skill deployment complete!"
-        echo "🎤 Skill ID: ${{ secrets.ALEXA_SKILL_ID }}"
+        if [ "${{ env.CDK_ENV }}" = "prod" ]; then
+          echo "🎤 Skill ID: ${{ secrets.ALEXA_SKILL_ID_PROD }}"
+        else
+          echo "🎤 Skill ID: ${{ secrets.ALEXA_SKILL_ID_DEV }}"
+        fi

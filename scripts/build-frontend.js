@@ -44,17 +44,26 @@ const buildTime = `${yy}${mm}${dd}${hh}${min}`;
 // API URLを取得（CloudFormationから）
 const { execSync } = require('child_process');
 let apiUrl;
-try {
-  apiUrl = execSync(
-    `aws cloudformation describe-stacks --stack-name showin-${env} --query 'Stacks[0].Outputs[?OutputKey==\`WebApiUrl\`].OutputValue' --output text`,
-    { encoding: 'utf8' }
-  ).trim();
-  // 末尾のスラッシュを削除
-  apiUrl = apiUrl.replace(/\/$/, '');
-} catch (error) {
-  console.error('Error fetching API URL from CloudFormation:', error.message);
-  console.error('Please deploy the stack first: cdk deploy showin-' + env);
-  process.exit(1);
+
+// 環境変数から API URL を取得（CI/CD環境用）
+if (process.env[`API_URL_${env.toUpperCase()}`]) {
+  apiUrl = process.env[`API_URL_${env.toUpperCase()}`];
+  console.log(`Using API URL from environment variable: ${apiUrl}`);
+} else {
+  // CloudFormationから取得を試みる
+  try {
+    apiUrl = execSync(
+      `aws cloudformation describe-stacks --stack-name showin-${env} --query 'Stacks[0].Outputs[?OutputKey==\`WebApiUrl\`].OutputValue' --output text 2>/dev/null`,
+      { encoding: 'utf8' }
+    ).trim();
+    // 末尾のスラッシュを削除
+    apiUrl = apiUrl.replace(/\/$/, '');
+  } catch (error) {
+    // スタックが存在しない場合はプレースホルダーを使用
+    apiUrl = `https://api-placeholder-${env}.execute-api.ap-northeast-1.amazonaws.com`;
+    console.warn(`Warning: CloudFormation stack not found. Using placeholder API URL: ${apiUrl}`);
+    console.warn('The frontend will need to be rebuilt after the stack is deployed.');
+  }
 }
 
 // テンプレート置換

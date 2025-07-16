@@ -10,13 +10,13 @@ import {
 } from "@aws-sdk/lib-dynamodb";
 import serverlessExpress from "@codegenie/serverless-express";
 import { createHash } from "crypto";
-import express from "express";
+import express, { Request, Response, NextFunction } from "express";
 
 const app = express();
 app.use(express.json());
 
 // CORS設定（全許可）
-app.use((req, res, next) => {
+app.use((req: Request, res: Response, next: NextFunction) => {
   res.header("Access-Control-Allow-Origin", "*");
   res.header("Access-Control-Allow-Methods", "GET, POST, DELETE, PUT, OPTIONS");
   res.header("Access-Control-Allow-Headers", "Content-Type, Authorization");
@@ -31,7 +31,7 @@ app.use((req, res, next) => {
 });
 
 // JWT検証ミドルウェア
-async function verifyGoogleToken(req: any, res: any, next: any) {
+async function verifyGoogleToken(req: any, res: Response, next: NextFunction): Promise<any> {
   try {
     const authHeader = req.headers.authorization;
     if (!authHeader || !authHeader.startsWith("Bearer ")) {
@@ -116,7 +116,7 @@ function generateMemoId(userId: string): string {
 }
 
 // GET /api/memos - メモ一覧取得（家族メモ、削除済み含む）
-app.get("/api/memos", verifyGoogleToken, async (req: any, res) => {
+app.get("/api/memos", verifyGoogleToken, async (req: any, res: Response) => {
   try {
     const userId = req.user.userId;
     const userName = req.user.name;
@@ -215,7 +215,7 @@ app.get("/api/memos", verifyGoogleToken, async (req: any, res) => {
 });
 
 // POST /api/memos - メモ追加
-app.post("/api/memos", verifyGoogleToken, async (req: any, res) => {
+app.post("/api/memos", verifyGoogleToken, async (req: any, res: Response) => {
   try {
     const { content } = req.body;
     const userId = req.user.userId;
@@ -258,7 +258,7 @@ app.post("/api/memos", verifyGoogleToken, async (req: any, res) => {
 });
 
 // DELETE /api/memos/:id - メモ削除（論理削除または物理削除）
-app.delete("/api/memos/:id", verifyGoogleToken, async (req: any, res) => {
+app.delete("/api/memos/:id", verifyGoogleToken, async (req: any, res: Response) => {
   try {
     const { id } = req.params;
 
@@ -316,7 +316,7 @@ app.delete("/api/memos/:id", verifyGoogleToken, async (req: any, res) => {
 });
 
 // PUT /api/memos/:id - メモ更新
-app.put("/api/memos/:id", verifyGoogleToken, async (req: any, res) => {
+app.put("/api/memos/:id", verifyGoogleToken, async (req: any, res: Response) => {
   try {
     const { id } = req.params;
     const { content } = req.body;
@@ -382,7 +382,7 @@ app.put("/api/memos/:id", verifyGoogleToken, async (req: any, res) => {
 });
 
 // PUT /api/memos/:id/restore - メモ復元
-app.put("/api/memos/:id/restore", verifyGoogleToken, async (req: any, res) => {
+app.put("/api/memos/:id/restore", verifyGoogleToken, async (req: any, res: Response) => {
   try {
     const { id } = req.params;
 
@@ -431,7 +431,7 @@ app.put("/api/memos/:id/restore", verifyGoogleToken, async (req: any, res) => {
 app.post(
   "/api/family/invite-codes",
   verifyGoogleToken,
-  async (req: any, res) => {
+  async (req: any, res: Response) => {
     try {
       const userId = req.user.userId;
       const userName = req.user.name || req.user.email.split("@")[0];
@@ -465,7 +465,7 @@ app.post(
 );
 
 // POST /api/family/join - 家族に参加
-app.post("/api/family/join", verifyGoogleToken, async (req: any, res) => {
+app.post("/api/family/join", verifyGoogleToken, async (req: any, res: Response) => {
   try {
     const { inviteCode } = req.body;
     const userId = req.user.userId;
@@ -540,7 +540,7 @@ app.post("/api/family/join", verifyGoogleToken, async (req: any, res) => {
 });
 
 // POST /api/family/leave - 家族から退出
-app.post("/api/family/leave", verifyGoogleToken, async (req: any, res) => {
+app.post("/api/family/leave", verifyGoogleToken, async (req: any, res: Response) => {
   try {
     const userId = req.user.userId;
     const userName = req.user.name || req.user.email.split("@")[0];
@@ -575,7 +575,7 @@ app.post("/api/family/leave", verifyGoogleToken, async (req: any, res) => {
 app.post(
   "/api/family/transfer-owner",
   verifyGoogleToken,
-  async (req: any, res) => {
+  async (req: any, res: Response) => {
     try {
       const { newOwnerUserId } = req.body;
       const userId = req.user.userId;
@@ -648,7 +648,7 @@ app.post(
 );
 
 // GET /api/family/members - メンバー一覧
-app.get("/api/family/members", verifyGoogleToken, async (req: any, res) => {
+app.get("/api/family/members", verifyGoogleToken, async (req: any, res: Response) => {
   try {
     const userId = req.user.userId;
     const userName = req.user.name || req.user.email.split("@")[0];
@@ -679,7 +679,7 @@ app.get("/api/family/members", verifyGoogleToken, async (req: any, res) => {
 // ========== ユーザー管理API ==========
 
 // PUT /api/user/name - 名前変更
-app.put("/api/user/name", verifyGoogleToken, async (req: any, res) => {
+app.put("/api/user/name", verifyGoogleToken, async (req: any, res: Response) => {
   try {
     const { name } = req.body;
     const userId = req.user.userId;
@@ -705,7 +705,7 @@ app.put("/api/user/name", verifyGoogleToken, async (req: any, res) => {
 });
 
 // 404ハンドリング
-app.use((req, res) => {
+app.use((req: Request, res: Response) => {
   res.status(404).json({ error: "Not found" });
 });
 

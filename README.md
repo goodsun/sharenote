@@ -64,6 +64,8 @@ aws configure
 
 ## 🚀 クイックスタート
 
+> **初回セットアップの場合**: [初回セットアップガイド](docs/INITIAL-SETUP-GUIDE.md)を参照してください。
+
 ### 1. 環境設定
 
 ```bash
@@ -129,11 +131,14 @@ cp .env.example .env.prod
 ### 3. デプロイ
 
 ```bash
-# 全コンポーネントのビルド
-npm run build:all
+# 環境別の簡単デプロイ
+npm run deploy:dev   # 開発環境
+npm run deploy:stg   # ステージング環境  
+npm run deploy:prod  # 本番環境
 
-# CDKデプロイ（バックエンド）
-cdk deploy showin-dev
+# または手動で環境を指定
+export CDK_ENV=dev
+npm run deploy
 
 # デプロイ出力からLambda ARNをコピー
 # 例: arn:aws:lambda:ap-northeast-1:123456789012:function:showin-dev-handler

@@ -16,8 +16,18 @@
     "watch": "tsc -w",
     "test": "jest",
     "cdk": "cdk",
+    "env:dev": "CDK_ENV=dev source scripts/set-env.sh",
+    "env:stg": "CDK_ENV=stg source scripts/set-env.sh", 
+    "env:prod": "CDK_ENV=prod source scripts/set-env.sh",
+    "deploy": "./scripts/deploy-simple.sh",
+    "deploy:dev": "CDK_ENV=dev ./scripts/deploy-simple.sh",
+    "deploy:stg": "CDK_ENV=stg ./scripts/deploy-simple.sh",
+    "deploy:prod": "CDK_ENV=prod ./scripts/deploy-simple.sh",
     "deploy:frontend": "npm run build:frontend && aws s3 sync ./build/frontend/ s3://$(aws cloudformation describe-stacks --stack-name showin-${CDK_ENV:-dev} --query 'Stacks[0].Outputs[?OutputKey==`FrontendBucketName`].OutputValue' --output text) --delete",
-    "deploy:ec2": "npm run build:frontend && rsync -avz --delete ./build/frontend/ ec2-user@${EC2_HOST}:/var/www/memo/"
+    "deploy:ec2": "npm run build:frontend && rsync -avz --delete ./build/frontend/ ec2-user@${EC2_HOST}:/var/www/memo/",
+    "deploy:initial": "./scripts/initial-deploy.sh",
+    "prebuild": "mkdir -p dist build/frontend",
+    "prebuild:frontend": "mkdir -p build/frontend"
   },
   "devDependencies": {
     "@types/aws-lambda": "^8.10.150",

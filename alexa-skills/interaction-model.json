@@ -1,7 +1,7 @@
 {
   "interactionModel": {
     "languageModel": {
-      "invocationName": "松蔭",
+      "invocationName": "共有手帳",
       "intents": [
         {
           "name": "AddMemoIntent",

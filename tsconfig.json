@@ -12,6 +12,7 @@
     "strict": true,
     "isolatedModules": true,
     "noImplicitAny": true,
+    "esModuleInterop": true,
     "strictNullChecks": true,
     "noImplicitThis": true,
     "alwaysStrict": true,

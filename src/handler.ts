@@ -13,7 +13,7 @@ export const handler = async (event: AlexaRequest): Promise<AlexaResponse> => {
     switch (requestType) {
       case "LaunchRequest":
         return buildResponse(
-          "松蔭へようこそ。声でつなぐ、家族の知恵。メモを追加、読み上げ、削除ができます。",
+          "共有手帳、松蔭へようこそ。追加、読み上げ、削除ができます。",
           false
         );
 
