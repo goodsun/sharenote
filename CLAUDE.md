@@ -149,17 +149,20 @@ cdk destroy showin-dev # Clean up
 - **Premature optimization**: Working > fast initially
 - **Scope creep**: Focus on core 3 functions first
 
-### 🚨 デプロイの鉄則：ローカルテストファースト
+### 🚨 デプロイの鉄則：CDKデプロイのみ使用
 
-**重要**: 17分の実装に2時間のデプロイで失敗した教訓から：
-- **必ず** `docs/deployment-checklist.md` を確認
-- **必ず** `docs/deployment-lessons.md` を読む（具体的な失敗例）
-- **鉄則**: 実装時間 < デプロイ時間になったら立ち止まれ
+**重要**: Lambda関数の手動更新は絶対禁止。GitHub Actionsと同じフローを厳守：
+1. `npm run build` - 全てのコードをビルド（Web API含む）
+2. `cdk deploy showin-dev --require-approval never` - CDKでデプロイ
+3. **禁止事項**:
+   - zipファイルを作成してLambdaを手動更新しない
+   - aws lambda update-functionコマンドを使わない
+   - CDK以外の方法でインフラを変更しない
 
-**最低限のローカルテスト**:
+**デプロイ前チェック**:
 ```bash
-npm run build && cdk synth    # CDK変更時
-[new-tool] --help             # 新ツール使用時
+npm run build && cdk synth    # ビルドと構文チェック
+cdk diff                      # 変更内容の確認
 ```
 
 ### CDK Best Practices

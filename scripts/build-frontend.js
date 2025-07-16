@@ -88,6 +88,22 @@ fs.writeFileSync(path.join(buildDir, 'app.js'), appJsContent);
 fs.writeFileSync(path.join(buildDir, 'index.html'), indexHtmlContent);
 fs.writeFileSync(path.join(buildDir, 'style.css'), fs.readFileSync('public/style.css', 'utf8'));
 
+// imgディレクトリをコピー
+const imgSrcDir = path.join('public', 'img');
+const imgDestDir = path.join(buildDir, 'img');
+if (fs.existsSync(imgSrcDir)) {
+  if (!fs.existsSync(imgDestDir)) {
+    fs.mkdirSync(imgDestDir, { recursive: true });
+  }
+  
+  // imgディレクトリ内のファイルをコピー
+  const imgFiles = fs.readdirSync(imgSrcDir);
+  imgFiles.forEach(file => {
+    fs.copyFileSync(path.join(imgSrcDir, file), path.join(imgDestDir, file));
+  });
+  console.log(`   Copied ${imgFiles.length} image files`);
+}
+
 console.log(`✅ Frontend built successfully to ${buildDir}/`);
 console.log(`   Environment: ${env}`);
 console.log(`   API URL: ${apiUrl}`);

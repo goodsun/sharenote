@@ -62,6 +62,13 @@
           </li>
           <li class="menu-separator"></li>
           <li>
+            <button id="export-csv-btn" class="menu-item">CSVエクスポート</button>
+          </li>
+          <li>
+            <button id="import-csv-btn" class="menu-item">CSVインポート</button>
+          </li>
+          <li class="menu-separator"></li>
+          <li>
             <button id="family-members-btn" class="menu-item">家族名簿</button>
           </li>
           <li>
@@ -124,6 +131,10 @@
             <p>
               「アレクサ、共有手帳で〇〇を記録」と話しかけるだけで、音声でメモを追加できます。
             </p>
+          </div>
+          <div class="help-version">
+            <p>バージョン情報</p>
+            <p id="help-build-info" class="build-info">読み込み中...</p>
           </div>
           <button id="close-help-btn" class="close-btn">閉じる</button>
         </div>
@@ -210,7 +221,7 @@
         <div id="login-screen" class="login-screen">
           <div class="login-content">
             <h2>松蔭</h2>
-            <p>-- 共有手帳 --</p>
+            <p>声で繋がる共有手帳</p>
             <div id="googleSignInButton"></div>
           </div>
         </div>
@@ -223,7 +234,7 @@
           <div class="empty-icon">📝</div>
           <h2>メモがありません</h2>
           <p>
-            「アレクサ、ボイスメモで〇〇をメモして」<br />と話しかけてメモを追加しましょう
+            「アレクサ、共有手帳で〇〇を追加」<br />と話しかけてメモを追加しましょう
           </p>
         </div>
 

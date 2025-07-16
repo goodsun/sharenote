@@ -3,7 +3,7 @@ name: Deploy
 on:
   push:
     branches:
-      - main
+      - production
       - develop
   workflow_dispatch:
     inputs:
@@ -45,7 +45,7 @@ jobs:
         run: |
           if [ "${{ github.event_name }}" = "workflow_dispatch" ]; then
             echo "CDK_ENV=${{ github.event.inputs.environment }}" >> $GITHUB_ENV
-          elif [ "${{ github.ref }}" = "refs/heads/main" ]; then
+          elif [ "${{ github.ref }}" = "refs/heads/production" ]; then
             echo "CDK_ENV=prod" >> $GITHUB_ENV
           elif [ "${{ github.ref }}" = "refs/heads/develop" ]; then
             echo "CDK_ENV=dev" >> $GITHUB_ENV

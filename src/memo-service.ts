@@ -4,6 +4,7 @@ import { MemoItem } from './common/types';
 import { createHash } from 'crypto';
 import { UserService } from './common/services/user-service';
 import { AWS_REGION, TABLE_NAMES, GSI_NAMES, INVITE_CODE_TTL } from './common/config/constants';
+import { EncryptionUtil } from './common/utils/encryption';
 
 export class MemoService {
   private docClient: DynamoDBDocumentClient;
@@ -73,12 +74,15 @@ export class MemoService {
       familyId
     };
 
+    // メモテキストを暗号化して保存
+    const encryptedMemo = EncryptionUtil.encryptFields(memo, ['text']);
+    
     await this.docClient.send(new PutCommand({
       TableName: this.tableName,
-      Item: memo
+      Item: encryptedMemo
     }));
 
-    return memo;
+    return memo; // 暗号化前のデータを返す
   }
 
   async getActiveMemos(userId: string): Promise<MemoItem[]> {
@@ -106,8 +110,14 @@ export class MemoService {
     console.log(`📝 First few memos:`, JSON.stringify(result.Items?.slice(0, 3), null, 2));
     
     const memos = (result.Items as MemoItem[]) || [];
-    console.log(`✅ Returning ${memos.length} memos for userId: ${userId}`);
-    return memos;
+    
+    // 暗号化されたテキストを復号化
+    const decryptedMemos = memos.map(memo => 
+      EncryptionUtil.decryptFields(memo, ['text'])
+    );
+    
+    console.log(`✅ Returning ${decryptedMemos.length} memos for userId: ${userId}`);
+    return decryptedMemos;
   }
 
   async deleteMemo(userId: string, memoId: string): Promise<void> {

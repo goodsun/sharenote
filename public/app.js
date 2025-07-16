@@ -52,6 +52,8 @@ const membersList = document.getElementById("members-list");
 const closeMembersBtn = document.getElementById("close-members-btn");
 const changeNameBtn = document.getElementById("change-name-btn");
 const logoutBtn = document.getElementById("logout-btn");
+const exportCsvBtn = document.getElementById("export-csv-btn");
+const importCsvBtn = document.getElementById("import-csv-btn");
 
 // 音声認識オブジェクト
 let recognition = null;
@@ -191,7 +193,13 @@ function handleGoogleSignIn(response) {
         base64 += new Array(5 - pad).join("=");
       }
 
-      const jsonPayload = atob(base64);
+      // UTF-8文字を正しくデコードするための処理
+      const binaryString = atob(base64);
+      const bytes = new Uint8Array(binaryString.length);
+      for (let i = 0; i < binaryString.length; i++) {
+        bytes[i] = binaryString.charCodeAt(i);
+      }
+      const jsonPayload = new TextDecoder('utf-8').decode(bytes);
       payload = JSON.parse(jsonPayload);
     } catch (decodeError) {
       console.error("Error decoding JWT:", decodeError);
@@ -330,20 +338,22 @@ function showFullTextDialog(memo) {
   // メタデータを設定
   const createdAt = formatDetailedTimestamp(memo.timestamp);
   const creator = memo.createdByName ? `by ${memo.createdByName}` : "";
-  
+
   let metadataText = `作成: ${createdAt} ${creator}`;
-  
+
   // 更新情報を追加（userIdと異なる場合のみ）
   if (memo.updatedBy && memo.updatedBy !== memo.userId) {
     const updatedAt = formatDetailedTimestamp(memo.updatedAt);
-    const updater = familyMembers.find(member => member.userId === memo.updatedBy);
+    const updater = familyMembers.find(
+      (member) => member.userId === memo.updatedBy
+    );
     const updaterName = updater ? updater.name : "";
-    
+
     if (updaterName) {
       metadataText += `\n更新: ${updatedAt} by ${updaterName}`;
     }
   }
-  
+
   fullTextMetadata.textContent = metadataText;
   fullTextMetadata.style.whiteSpace = "pre-line"; // 改行を有効にする
 
@@ -561,6 +571,16 @@ function setupEventListeners() {
     logout();
   });
 
+  exportCsvBtn.addEventListener("click", () => {
+    closeMenu();
+    exportToCSV();
+  });
+
+  importCsvBtn.addEventListener("click", () => {
+    closeMenu();
+    importFromCSV();
+  });
+
   // ヘルプモーダル閉じる
   closeHelpBtn.addEventListener("click", () => {
     hideHelp();
@@ -653,8 +673,15 @@ function closeMenu() {
 }
 
 // ヘルプ表示
-function showHelp() {
+async function showHelp() {
   helpModal.classList.add("active");
+
+  // ビルド情報を取得して表示
+  const buildInfo = await getBuildInfo();
+  const buildInfoEl = document.getElementById("help-build-info");
+  if (buildInfoEl) {
+    buildInfoEl.innerHTML = buildInfo;
+  }
 }
 
 // ヘルプ非表示
@@ -668,28 +695,36 @@ function setupPullToRefresh() {
   let currentY = 0;
   let pulling = false;
 
-  document.addEventListener("touchstart", (e) => {
-    if (window.scrollY === 0) {
-      startY = e.touches[0].clientY;
-      pulling = true;
-    }
-  }, { passive: true });
-
-  document.addEventListener("touchmove", (e) => {
-    if (!pulling) return;
-
-    currentY = e.touches[0].clientY;
-    const pullDistance = currentY - startY;
-
-    if (pullDistance > 0 && pullDistance < 150) {
-      e.preventDefault();
-      pullToRefresh.style.top = `${Math.min(pullDistance - 60, 80)}px`;
-
-      if (pullDistance > 80) {
-        pullToRefresh.classList.add("visible");
+  document.addEventListener(
+    "touchstart",
+    (e) => {
+      if (window.scrollY === 0) {
+        startY = e.touches[0].clientY;
+        pulling = true;
       }
-    }
-  }, { passive: false }); // preventDefaultを使うため、passiveはfalse
+    },
+    { passive: true }
+  );
+
+  document.addEventListener(
+    "touchmove",
+    (e) => {
+      if (!pulling) return;
+
+      currentY = e.touches[0].clientY;
+      const pullDistance = currentY - startY;
+
+      if (pullDistance > 0 && pullDistance < 150) {
+        e.preventDefault();
+        pullToRefresh.style.top = `${Math.min(pullDistance - 60, 80)}px`;
+
+        if (pullDistance > 80) {
+          pullToRefresh.classList.add("visible");
+        }
+      }
+    },
+    { passive: false }
+  ); // preventDefaultを使うため、passiveはfalse
 
   document.addEventListener("touchend", async () => {
     if (!pulling) return;
@@ -732,7 +767,14 @@ async function loadMemos() {
       return;
     }
 
-    if (!response.ok) throw new Error("Failed to fetch memos");
+    if (!response.ok) {
+      console.error("API Error:", response.status, response.statusText);
+      const errorBody = await response.text();
+      console.error("Error body:", errorBody);
+      throw new Error(
+        `Failed to fetch memos: ${response.status} ${response.statusText}`
+      );
+    }
 
     memos = await response.json();
     renderMemos();
@@ -821,9 +863,11 @@ function createMemoElement(memo) {
   // 作成者表示を追加（updatedByがあればそれを、なければcreatedByNameを使用）
   const creator = document.createElement("div");
   creator.className = "memo-creator";
-  
+
   if (memo.updatedBy) {
-    const updater = familyMembers.find(member => member.userId === memo.updatedBy);
+    const updater = familyMembers.find(
+      (member) => member.userId === memo.updatedBy
+    );
     const updaterName = updater ? updater.name : "";
     if (updaterName) {
       creator.textContent = `by ${updaterName}`;
@@ -850,30 +894,38 @@ function setupSwipeToDelete(element, memoId, isDeleted) {
   let swiping = false;
   let moved = false;
 
-  element.addEventListener("touchstart", (e) => {
-    startX = e.touches[0].clientX;
-    currentX = startX; // 初期値を設定
-    swiping = true;
-    moved = false;
-    element.classList.add("swiping");
-  }, { passive: true });
+  element.addEventListener(
+    "touchstart",
+    (e) => {
+      startX = e.touches[0].clientX;
+      currentX = startX; // 初期値を設定
+      swiping = true;
+      moved = false;
+      element.classList.add("swiping");
+    },
+    { passive: true }
+  );
 
-  element.addEventListener("touchmove", (e) => {
-    if (!swiping) return;
+  element.addEventListener(
+    "touchmove",
+    (e) => {
+      if (!swiping) return;
 
-    currentX = e.touches[0].clientX;
-    moved = true; // 移動があったことを記録
-    const diffX = currentX - startX;
+      currentX = e.touches[0].clientX;
+      moved = true; // 移動があったことを記録
+      const diffX = currentX - startX;
 
-    // 両方向のスワイプを許可
-    if (diffX < 0 && diffX > -100) {
-      // 左スワイプ
-      element.style.transform = `translateX(${diffX}px)`;
-    } else if (diffX > 0 && diffX < 100) {
-      // 右スワイプ
-      element.style.transform = `translateX(${diffX}px)`;
-    }
-  }, { passive: true });
+      // 両方向のスワイプを許可
+      if (diffX < 0 && diffX > -100) {
+        // 左スワイプ
+        element.style.transform = `translateX(${diffX}px)`;
+      } else if (diffX > 0 && diffX < 100) {
+        // 右スワイプ
+        element.style.transform = `translateX(${diffX}px)`;
+      }
+    },
+    { passive: true }
+  );
 
   element.addEventListener("touchend", () => {
     if (!swiping) return;
@@ -1020,7 +1072,9 @@ async function editMemo(memoId) {
       } catch (e) {
         console.error("Failed to parse error response");
       }
-      throw new Error(errorData?.error || `Failed to update memo (${response.status})`);
+      throw new Error(
+        errorData?.error || `Failed to update memo (${response.status})`
+      );
     }
 
     // 成功したら更新
@@ -1126,7 +1180,7 @@ function formatDetailedTimestamp(timestamp) {
   const hh = String(date.getHours()).padStart(2, "0");
   const min = String(date.getMinutes()).padStart(2, "0");
   const ss = String(date.getSeconds()).padStart(2, "0");
-  
+
   return `${yy}/${mm}/${dd} ${hh}:${min}:${ss}`;
 }
 
@@ -1384,13 +1438,55 @@ function updateMenuVisibility() {
 // バージョン情報を初期化
 function initializeVersion() {
   // ビルド時刻はindex.htmlのdata属性から取得
-  const buildTime = document.documentElement.getAttribute('data-build-time');
+  const buildTime = document.documentElement.getAttribute("data-build-time");
   if (buildTime) {
     versionText.textContent = `build:${buildTime}`;
   } else {
     // フォールバック: ビルド時刻が設定されていない場合
     versionText.textContent = `v1.0.3`;
   }
+}
+
+// ビルド情報を取得
+async function getBuildInfo() {
+  const buildTime = document.documentElement.getAttribute("data-build-time");
+  let frontendInfo = "";
+  let lambdaInfo = "";
+
+  // フロントエンドのビルド情報
+  if (buildTime) {
+    frontendInfo = `Frontend: ${buildTime}`;
+  } else {
+    frontendInfo = "Frontend: ビルド情報なし";
+  }
+
+  // Lambda関数のビルド情報を取得
+  try {
+    const response = await fetch(`${API_BASE_URL}/api/version`);
+
+    if (response.ok) {
+      const data = await response.json();
+      let lambdaBuildTime = "情報なし";
+      if (data.buildTime) {
+        const date = new Date(data.buildTime);
+        const yy = String(date.getFullYear()).slice(-2);
+        const mm = String(date.getMonth() + 1).padStart(2, "0");
+        const dd = String(date.getDate()).padStart(2, "0");
+        const hh = String(date.getHours()).padStart(2, "0");
+        const min = String(date.getMinutes()).padStart(2, "0");
+        lambdaBuildTime = `${yy}${mm}${dd}${hh}${min}`;
+      }
+      lambdaInfo = `Lambda: ${lambdaBuildTime} (${
+        data.buildEnvironment || "unknown"
+      })`;
+    } else {
+      lambdaInfo = "Lambda: 情報取得失敗";
+    }
+  } catch (error) {
+    lambdaInfo = "Lambda: 情報取得エラー";
+  }
+
+  return `${frontendInfo}<br>${lambdaInfo}`;
 }
 
 // 招待コード生成
@@ -1529,18 +1625,73 @@ async function showFamilyMembers() {
     const memberItem = document.createElement("div");
     memberItem.className = "member-item";
 
+    // アイコンと転送ボタンのコンテナ
+    const memberIconContainer = document.createElement("div");
+    memberIconContainer.className = "member-icon-container";
+
+    // アイコン表示
+    const memberIcon = document.createElement("img");
+    memberIcon.className = "member-icon";
+    // Alexaユーザーの場合は専用アイコンを使用
+    if (member.userId && member.userId.startsWith("amzn1.ask.account.")) {
+      memberIcon.src = "/img/alexa.svg";
+    } else {
+      memberIcon.src = member.icon || "/img/default-avatar.svg";
+    }
+    memberIcon.alt = member.name;
+    memberIcon.onerror = function () {
+      this.src = "/img/default-avatar.svg";
+    };
+    memberIconContainer.appendChild(memberIcon);
+
+    // バッジをアイコンに重ねて表示
+    const memberBadge = document.createElement("div");
+    memberBadge.className = member.isOwner
+      ? "member-badge-overlay owner"
+      : "member-badge-overlay";
+    memberBadge.textContent = member.isOwner ? "当主" : "家族";
+    memberIconContainer.appendChild(memberBadge);
+
+    memberItem.appendChild(memberIconContainer);
+
     const memberInfo = document.createElement("div");
     memberInfo.className = "member-info";
 
-    const memberNameWrapper = document.createElement("div");
-    memberNameWrapper.style.flex = "1";
+    const memberDetails = document.createElement("div");
+    memberDetails.className = "member-details";
+    memberDetails.style.flex = "1";
 
     const memberName = document.createElement("div");
     memberName.className = "member-name";
     memberName.textContent = member.name;
+    memberDetails.appendChild(memberName);
 
-    memberNameWrapper.appendChild(memberName);
-    memberInfo.appendChild(memberNameWrapper);
+    const memberEmail = document.createElement("div");
+    memberEmail.className = "member-email";
+    memberEmail.textContent = member.email || "";
+    memberDetails.appendChild(memberEmail);
+
+    const memberLastLogin = document.createElement("div");
+    memberLastLogin.className = "member-last-login";
+    if (member.lastLogin) {
+      const lastLoginDate = new Date(member.lastLogin);
+      const now = new Date();
+      const diffMinutes = Math.floor((now - lastLoginDate) / (1000 * 60));
+      let lastLoginText = "";
+
+      if (diffMinutes < 1) {
+        lastLoginText = "たった今";
+      } else if (diffMinutes < 60) {
+        lastLoginText = `${diffMinutes}分前`;
+      } else if (diffMinutes < 1440) {
+        lastLoginText = `${Math.floor(diffMinutes / 60)}時間前`;
+      } else {
+        lastLoginText = `${Math.floor(diffMinutes / 1440)}日前`;
+      }
+
+      memberLastLogin.textContent = `最終ログイン: ${lastLoginText}`;
+    }
+    memberDetails.appendChild(memberLastLogin);
 
     // 現在のユーザーが筆頭者で、このメンバーが筆頭者でない場合、移譲ボタンを表示
     // ただし、Alexaユーザー（Amazon ID）には移譲しない
@@ -1553,19 +1704,19 @@ async function showFamilyMembers() {
       !isAlexaUser &&
       familyMembers.length > 1
     ) {
+      const transferContainer = document.createElement("div");
+      transferContainer.className = "transfer-container";
+      
       const transferBtn = document.createElement("button");
-      transferBtn.className = "transfer-btn";
+      transferBtn.className = "transfer-btn-inline";
       transferBtn.textContent = "家督を譲る";
       transferBtn.onclick = () => transferOwnership(member.userId, member.name);
-      memberInfo.appendChild(transferBtn);
+      
+      transferContainer.appendChild(transferBtn);
+      memberDetails.appendChild(transferContainer);
     }
 
-    const memberBadge = document.createElement("div");
-    memberBadge.className = member.isOwner
-      ? "member-badge owner"
-      : "member-badge";
-    memberBadge.textContent = member.isOwner ? "当主" : "家族";
-    memberInfo.appendChild(memberBadge);
+    memberInfo.appendChild(memberDetails);
 
     memberItem.appendChild(memberInfo);
 
@@ -1573,6 +1724,128 @@ async function showFamilyMembers() {
   });
 
   membersModal.style.display = "flex";
+}
+
+// CSVエクスポート機能
+function exportToCSV() {
+  if (memos.length === 0) {
+    alert("エクスポートするメモがありません。");
+    return;
+  }
+
+  // CSV用のデータを準備
+  const csvRows = [];
+  const headers = ["内容", "作成日時", "作成者", "更新日時", "更新者", "削除済み"];
+  csvRows.push(headers.join(","));
+
+  memos.forEach(memo => {
+    const row = [
+      `"${memo.content.replace(/"/g, '""')}"`, // 内容（ダブルクォートをエスケープ）
+      formatDetailedTimestamp(memo.timestamp), // 作成日時
+      memo.createdByName || memo.userId || "", // 作成者
+      memo.updatedAt ? formatDetailedTimestamp(memo.updatedAt) : "", // 更新日時
+      memo.updatedByName || memo.updatedBy || "", // 更新者
+      memo.deleted ? "削除済み" : "" // 削除済みフラグ
+    ];
+    csvRows.push(row.join(","));
+  });
+
+  // CSVファイルとしてダウンロード
+  const csvContent = "\uFEFF" + csvRows.join("\n"); // BOM付きUTF-8
+  const blob = new Blob([csvContent], { type: "text/csv;charset=utf-8;" });
+  const url = URL.createObjectURL(blob);
+  const link = document.createElement("a");
+  const now = new Date();
+  const fileName = `showin_memos_${now.getFullYear()}${(now.getMonth() + 1).toString().padStart(2, "0")}${now.getDate().toString().padStart(2, "0")}.csv`;
+  
+  link.href = url;
+  link.download = fileName;
+  link.click();
+  URL.revokeObjectURL(url);
+}
+
+// CSVインポート機能
+function importFromCSV() {
+  // ファイル選択用のinput要素を作成
+  const input = document.createElement("input");
+  input.type = "file";
+  input.accept = ".csv";
+  
+  input.onchange = async (e) => {
+    const file = e.target.files[0];
+    if (!file) return;
+
+    try {
+      const text = await file.text();
+      const lines = text.split("\n");
+      
+      // ヘッダー行をスキップ
+      if (lines.length <= 1) {
+        alert("CSVファイルが空です。");
+        return;
+      }
+
+      const newMemos = [];
+      
+      // データ行を処理
+      for (let i = 1; i < lines.length; i++) {
+        const line = lines[i].trim();
+        if (!line) continue;
+
+        // CSV行をパース（カンマ区切りだが、ダブルクォート内のカンマは無視）
+        const matches = line.match(/(".*?"|[^,]+)(?=\s*,|\s*$)/g);
+        if (!matches || matches.length < 1) continue;
+
+        const content = matches[0].replace(/^"|"$/g, '').replace(/""/g, '"');
+        if (!content) continue;
+
+        newMemos.push(content);
+      }
+
+      if (newMemos.length === 0) {
+        alert("インポート可能なメモが見つかりませんでした。");
+        return;
+      }
+
+      const confirmMessage = `${newMemos.length}件のメモをインポートしますか？`;
+      if (!confirm(confirmMessage)) return;
+
+      // メモを一括追加
+      let successCount = 0;
+      showLoading();
+
+      for (const content of newMemos) {
+        try {
+          const response = await fetch(`${API_BASE_URL}/api/memos`, {
+            method: "POST",
+            headers: {
+              "Content-Type": "application/json",
+              Authorization: `Bearer ${localStorage.getItem("googleToken")}`,
+            },
+            body: JSON.stringify({ content }),
+          });
+
+          if (response.ok) {
+            successCount++;
+          }
+        } catch (error) {
+          console.error("Failed to import memo:", error);
+        }
+      }
+
+      hideLoading();
+      alert(`${successCount}件のメモをインポートしました。`);
+      
+      // メモを再読み込み
+      await loadMemos();
+      
+    } catch (error) {
+      console.error("CSV import error:", error);
+      alert("CSVファイルの読み込みに失敗しました。");
+    }
+  };
+
+  input.click();
 }
 
 // 初期化

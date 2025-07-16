@@ -11,6 +11,7 @@ import {
 import serverlessExpress from "@codegenie/serverless-express";
 import { createHash } from "crypto";
 import express, { Request, Response, NextFunction } from "express";
+import { EncryptionUtil } from "../src/common/utils/encryption";
 
 const app = express();
 app.use(express.json());
@@ -82,6 +83,7 @@ async function verifyGoogleToken(req: any, res: Response, next: NextFunction): P
       sub: payload.sub,  // updateメソッドで使用するため追加
       email: payload.email,
       name: payload.name,
+      picture: payload.picture, // Googleアバター画像URL
     };
 
     next();
@@ -125,6 +127,12 @@ app.get("/api/memos", verifyGoogleToken, async (req: any, res: Response) => {
     // ユーザー情報を取得または作成
     const user = await userService.getOrCreateUser(userId, userName, email);
     console.log(`User info for ${userId}:`, JSON.stringify(user, null, 2));
+    
+    // ログイン情報を更新（email, icon, lastLogin）
+    if (req.user.picture || req.user.email) {
+      await userService.updateLoginInfo(userId, req.user.email, req.user.picture);
+    }
+    
     const familyId = user.familyId;
     console.log(`Resolved familyId: ${familyId}`);
 
@@ -195,7 +203,7 @@ app.get("/api/memos", verifyGoogleToken, async (req: any, res: Response) => {
     const memos = filteredItems
       .map((item) => ({
         id: item.memoId,
-        content: item.text,
+        content: EncryptionUtil.decrypt(item.text),
         timestamp: item.timestamp,
         userId: item.userId,
         deleted: item.deleted === "true",
@@ -235,17 +243,21 @@ app.post("/api/memos", verifyGoogleToken, async (req: any, res: Response) => {
     const timestamp = new Date().toISOString();
     const memoId = generateMemoId(userId);
 
+    // テキストを暗号化
+    const encryptedText = EncryptionUtil.encrypt(content);
+    
     const putCommand = new PutCommand({
       TableName: tableName,
       Item: {
         userId,
         memoId,
-        text: content,
+        text: encryptedText,
         timestamp,
         deleted: "false",
         updatedAt: timestamp,
         updatedBy: userId,
         familyId,
+        _encryptionVersion: 1,
       },
     });
 
@@ -355,20 +367,25 @@ app.put("/api/memos/:id", verifyGoogleToken, async (req: any, res: Response) => 
       return;
     }
     
+    // テキストを暗号化
+    const encryptedContent = EncryptionUtil.encrypt(content);
+    
     const updateCommand = new UpdateCommand({
       TableName: tableName,
       Key: {
         userId: memo.userId,
         memoId: id,
       },
-      UpdateExpression: "SET #text = :content, updatedAt = :updatedAt, updatedBy = :updatedBy",
+      UpdateExpression: "SET #text = :content, updatedAt = :updatedAt, updatedBy = :updatedBy, #encVer = :encVer",
       ExpressionAttributeNames: {
         "#text": "text",
+        "#encVer": "_encryptionVersion",
       },
       ExpressionAttributeValues: {
-        ":content": content,
+        ":content": encryptedContent,
         ":updatedAt": new Date().toISOString(),
         ":updatedBy": req.user.sub,
+        ":encVer": 1,
       },
     });
 
@@ -666,6 +683,9 @@ app.get("/api/family/members", verifyGoogleToken, async (req: any, res: Response
     const members = familyMembers.map((member) => ({
       userId: member.userId,
       name: member.userName,
+      email: member.userId.startsWith("amzn1.ask.account.") ? "Alexaアシスタント" : member.email,
+      icon: member.icon,
+      lastLogin: member.lastLogin,
       isOwner: member.userId === familyId,
     }));
 
@@ -702,6 +722,15 @@ app.put("/api/user/name", verifyGoogleToken, async (req: any, res: Response) => 
     console.error("Error updating user name:", error);
     res.status(500).json({ error: "名前の変更に失敗しました" });
   }
+});
+
+// GET /api/version - ビルド情報取得
+app.get("/api/version", (req: Request, res: Response) => {
+  res.json({
+    buildTime: process.env.BUILD_TIME || "development",
+    buildEnvironment: process.env.CDK_ENV || "unknown",
+    region: process.env.AWS_REGION || "ap-northeast-1",
+  });
 });
 
 // 404ハンドリング

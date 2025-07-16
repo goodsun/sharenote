@@ -1,0 +1,108 @@
+name: Alexa Skill Update Notification
+
+on:
+  push:
+    branches:
+      - develop
+      - production
+    paths:
+      - 'alexa-skills/**'
+      - 'src/handler.ts'  # Alexaの応答メッセージが含まれる
+
+jobs:
+  notify-update-needed:
+    runs-on: ubuntu-latest
+    
+    steps:
+      - name: Checkout code
+        uses: actions/checkout@v3
+        with:
+          fetch-depth: 2  # 変更前後を比較するため
+
+      - name: Check what changed
+        id: changes
+        run: |
+          echo "### 🎤 Alexaスキルの更新が必要です" >> $GITHUB_STEP_SUMMARY
+          echo "" >> $GITHUB_STEP_SUMMARY
+          echo "以下のファイルが変更されました：" >> $GITHUB_STEP_SUMMARY
+          echo "\`\`\`" >> $GITHUB_STEP_SUMMARY
+          git diff --name-only HEAD^ HEAD | grep -E "(alexa-skills/|src/handler.ts)" >> $GITHUB_STEP_SUMMARY || true
+          echo "\`\`\`" >> $GITHUB_STEP_SUMMARY
+          echo "" >> $GITHUB_STEP_SUMMARY
+          
+          # 環境を判定
+          if [ "${{ github.ref }}" = "refs/heads/production" ]; then
+            SKILL_ID="${{ secrets.ALEXA_SKILL_ID_PROD }}"
+            ENV_NAME="本番環境"
+            SKILL_NAME="共有手帳"
+          else
+            SKILL_ID="${{ secrets.ALEXA_SKILL_ID_DEV }}"
+            ENV_NAME="開発環境"
+            SKILL_NAME="共有手帳 Dev"
+          fi
+          
+          echo "## 📋 必要な作業" >> $GITHUB_STEP_SUMMARY
+          echo "" >> $GITHUB_STEP_SUMMARY
+          echo "### 1. Alexa Developer Consoleにログイン" >> $GITHUB_STEP_SUMMARY
+          echo "[https://developer.amazon.com/alexa/console/ask](https://developer.amazon.com/alexa/console/ask)" >> $GITHUB_STEP_SUMMARY
+          echo "" >> $GITHUB_STEP_SUMMARY
+          
+          echo "### 2. スキルを選択" >> $GITHUB_STEP_SUMMARY
+          echo "- **環境**: $ENV_NAME" >> $GITHUB_STEP_SUMMARY
+          echo "- **スキル名**: $SKILL_NAME" >> $GITHUB_STEP_SUMMARY
+          echo "- **スキルID**: \`$SKILL_ID\`" >> $GITHUB_STEP_SUMMARY
+          echo "" >> $GITHUB_STEP_SUMMARY
+          
+          # interaction-model.jsonが変更された場合
+          if git diff --name-only HEAD^ HEAD | grep -q "alexa-skills/interaction-model.json"; then
+            echo "### 3. 対話モデルの更新" >> $GITHUB_STEP_SUMMARY
+            echo "1. 「ビルド」タブ → 「対話モデル」→ 「JSON エディター」" >> $GITHUB_STEP_SUMMARY
+            echo "2. 以下のファイルの内容を全てコピーして貼り付け：" >> $GITHUB_STEP_SUMMARY
+            echo "   \`alexa-skills/interaction-model.json\`" >> $GITHUB_STEP_SUMMARY
+            echo "3. 「モデルを保存」→「モデルをビルド」" >> $GITHUB_STEP_SUMMARY
+            echo "" >> $GITHUB_STEP_SUMMARY
+          fi
+          
+          # handler.tsが変更された場合
+          if git diff --name-only HEAD^ HEAD | grep -q "src/handler.ts"; then
+            echo "### 3. Lambda関数の確認" >> $GITHUB_STEP_SUMMARY
+            echo "⚠️ \`src/handler.ts\`が変更されました。" >> $GITHUB_STEP_SUMMARY
+            echo "" >> $GITHUB_STEP_SUMMARY
+            echo "以下の変更が含まれている場合は、対話モデルの更新も必要かもしれません：" >> $GITHUB_STEP_SUMMARY
+            echo "- 新しいインテントの追加" >> $GITHUB_STEP_SUMMARY
+            echo "- 発話例の変更" >> $GITHUB_STEP_SUMMARY
+            echo "- スロットタイプの変更" >> $GITHUB_STEP_SUMMARY
+            echo "" >> $GITHUB_STEP_SUMMARY
+            
+            # 変更内容を表示
+            echo "<details>" >> $GITHUB_STEP_SUMMARY
+            echo "<summary>handler.tsの変更内容</summary>" >> $GITHUB_STEP_SUMMARY
+            echo "" >> $GITHUB_STEP_SUMMARY
+            echo "\`\`\`diff" >> $GITHUB_STEP_SUMMARY
+            git diff HEAD^ HEAD -- src/handler.ts | head -50 >> $GITHUB_STEP_SUMMARY || true
+            echo "\`\`\`" >> $GITHUB_STEP_SUMMARY
+            echo "</details>" >> $GITHUB_STEP_SUMMARY
+            echo "" >> $GITHUB_STEP_SUMMARY
+          fi
+          
+          echo "### 4. テスト" >> $GITHUB_STEP_SUMMARY
+          echo "1. 「テスト」タブで動作確認" >> $GITHUB_STEP_SUMMARY
+          echo "2. 実機（Echo等）でも確認" >> $GITHUB_STEP_SUMMARY
+          echo "" >> $GITHUB_STEP_SUMMARY
+          
+          echo "---" >> $GITHUB_STEP_SUMMARY
+          echo "💡 **ヒント**: この作業を自動化したい場合は、ASK CLIのトークンをGitHub Secretsに設定してください。" >> $GITHUB_STEP_SUMMARY
+
+      - name: Create issue if needed
+        if: github.event_name == 'push' && contains(github.event.head_commit.message, '[create-issue]')
+        uses: actions/github-script@v6
+        with:
+          script: |
+            const issue = await github.rest.issues.create({
+              owner: context.repo.owner,
+              repo: context.repo.repo,
+              title: '🎤 Alexaスキルの更新が必要です',
+              body: `Alexaスキル関連のファイルが変更されました。\n\n[ワークフローのサマリー](${context.serverUrl}/${context.repo.owner}/${context.repo.repo}/actions/runs/${context.runId})を確認して、必要な作業を実施してください。`,
+              labels: ['alexa', 'manual-action-required']
+            });
+            console.log(`Issue created: ${issue.data.html_url}`);

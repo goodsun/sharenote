@@ -42,6 +42,7 @@ header {
 header h1 {
   font-size: 24px;
   font-weight: 600;
+  font-family: "游明朝", "Yu Mincho", "Hiragino Mincho Pro", serif;
 }
 
 .header-right {
@@ -249,6 +250,26 @@ header h1 {
   font-size: 14px;
   color: #9ca3af;
   margin-top: 10px;
+}
+
+.help-version {
+  margin-top: 20px;
+  padding-top: 20px;
+  border-top: 1px solid #e5e7eb;
+  text-align: center;
+}
+
+.help-version p:first-child {
+  font-weight: 600;
+  color: #333;
+  margin-bottom: 8px;
+}
+
+.build-info {
+  font-size: 12px;
+  color: #6b7280;
+  font-family: monospace;
+  line-height: 1.6;
 }
 
 .close-btn {
@@ -769,8 +790,15 @@ header h1 {
   border-radius: 8px;
   margin-bottom: 10px;
   display: flex;
-  justify-content: space-between;
   align-items: center;
+  gap: 15px;
+}
+
+.member-icon-container {
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  position: relative;
 }
 
 .member-name {
@@ -790,26 +818,99 @@ header h1 {
   color: white;
 }
 
+.member-badge-overlay {
+  position: absolute;
+  bottom: -7px;
+  right: -4px;
+  background-color: #f3f4f6;
+  color: #6b7280;
+  padding: 1px 4px;
+  border-radius: 8px;
+  font-size: 10px;
+  font-weight: 500;
+  border: 1px solid rgb(192, 185, 185);
+  box-shadow: 0 1px 3px rgba(0, 0, 0, 0.1);
+}
+
+.member-badge-overlay.owner {
+  background-color: #0e2246;
+  color: white;
+}
+
 .member-info {
   display: flex;
   align-items: center;
   justify-content: space-between;
   flex: 1;
+  gap: 10px;
+}
+
+.member-icon {
+  width: 58px;
+  height: 5%;
+  border-radius: 50%;
+  object-fit: cover;
+  margin-right: 0 px;
+  border: 1px solid #e5e7eb;
+}
+
+.member-details {
+  flex: 1;
+  min-width: 0;
+}
+
+.member-email {
+  font-size: 13px;
+  color: #6b7280;
+  margin-top: 2px;
+  overflow: hidden;
+  text-overflow: ellipsis;
+  white-space: nowrap;
+}
+
+.member-last-login {
+  font-size: 11px;
+  color: #9ca3af;
+  margin-top: 4px;
 }
 
 .transfer-btn {
   background-color: #3b82f6;
   color: white;
   border: none;
-  padding: 6px 12px;
-  border-radius: 6px;
-  font-size: 12px;
+  padding: 2px 4px;
+  border-radius: 4px;
+  font-size: 10px;
   cursor: pointer;
-  margin-right: 10px;
+  margin-top: 6px;
   transition: background-color 0.2s;
+  white-space: nowrap;
 }
 
 .transfer-btn:hover {
+  background-color: #2563eb;
+}
+
+.transfer-container {
+  display: flex;
+  align-items: center;
+  gap: 8px;
+  margin-top: 4px;
+}
+
+.transfer-btn-inline {
+  background-color: #3b82f6;
+  color: white;
+  border: none;
+  padding: 2px 8px;
+  border-radius: 4px;
+  font-size: 11px;
+  cursor: pointer;
+  transition: background-color 0.2s;
+  white-space: nowrap;
+}
+
+.transfer-btn-inline:hover {
   background-color: #2563eb;
 }
 

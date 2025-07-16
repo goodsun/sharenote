@@ -105,6 +105,7 @@ export class ShowinStack extends cdk.Stack {
         INVITE_CODE_TABLE_NAME: inviteCodeTable.tableName,
         ENVIRONMENT: environment,
         LOG_LEVEL: environment === 'prod' ? 'WARN' : 'INFO',
+        ENCRYPTION_KEY: process.env.ENCRYPTION_KEY || 'default-encryption-key-for-dev',
       },
       logGroup: logGroup,
     });
@@ -137,6 +138,9 @@ export class ShowinStack extends cdk.Stack {
         MEMO_TABLE_NAME: this.memoTable.tableName,
         USER_TABLE_NAME: userTable.tableName,
         INVITE_CODE_TABLE_NAME: inviteCodeTable.tableName,
+        BUILD_TIME: new Date().toISOString(),
+        CDK_ENV: environment,
+        ENCRYPTION_KEY: process.env.ENCRYPTION_KEY || 'default-encryption-key-for-dev',
       },
     });
 
@@ -209,6 +213,10 @@ export class ShowinStack extends cdk.Stack {
     // PUT /api/user/name - 名前変更
     const nameResource = userResource.addResource('name');
     nameResource.addMethod('PUT', new apigateway.LambdaIntegration(webApiHandler));
+    
+    // GET /api/version - ビルド情報
+    const versionResource = apiResource.addResource('version');
+    versionResource.addMethod('GET', new apigateway.LambdaIntegration(webApiHandler));
 
     // Output the API endpoint
     new cdk.CfnOutput(this, 'WebApiUrl', {
