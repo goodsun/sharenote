@@ -1,0 +1,42 @@
+{
+  "name": "showin",
+  "version": "1.0.0",
+  "description": "松蔭（showIN） - 声でつなぐ、家族の知恵",
+  "bin": {
+    "showin": "bin/showin.js"
+  },
+  "scripts": {
+    "build": "tsc",
+    "build:all": "npm run build && npm run build:web-api",
+    "build:web-api": "node scripts/build-web-api.js",
+    "build:frontend": "node scripts/build-frontend.js",
+    "build:frontend:dev": "node scripts/build-frontend.js --env=dev",
+    "build:frontend:stg": "node scripts/build-frontend.js --env=stg", 
+    "build:frontend:prod": "node scripts/build-frontend.js --env=prod",
+    "watch": "tsc -w",
+    "test": "jest",
+    "cdk": "cdk",
+    "deploy:frontend": "npm run build:frontend && aws s3 sync ./build/frontend/ s3://$(aws cloudformation describe-stacks --stack-name showin-${CDK_ENV:-dev} --query 'Stacks[0].Outputs[?OutputKey==`FrontendBucketName`].OutputValue' --output text) --delete",
+    "deploy:ec2": "npm run build:frontend && rsync -avz --delete ./build/frontend/ ec2-user@${EC2_HOST}:/var/www/memo/"
+  },
+  "devDependencies": {
+    "@types/aws-lambda": "^8.10.150",
+    "@types/express": "^5.0.3",
+    "@types/jest": "^29.5.14",
+    "@types/node": "22.7.9",
+    "aws-cdk": "2.1018.1",
+    "jest": "^29.7.0",
+    "ts-jest": "^29.2.5",
+    "ts-node": "^10.9.2",
+    "typescript": "~5.6.3"
+  },
+  "dependencies": {
+    "@aws-sdk/client-dynamodb": "^3.844.0",
+    "@aws-sdk/lib-dynamodb": "^3.844.0",
+    "@codegenie/serverless-express": "^4.17.0",
+    "aws-cdk-lib": "2.200.1",
+    "constructs": "^10.0.0",
+    "dotenv": "^16.0.0",
+    "express": "^5.1.0"
+  }
+}
