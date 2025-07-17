@@ -1,6 +1,6 @@
 #!/usr/bin/env node
 import * as cdk from 'aws-cdk-lib';
-import { ShowinStack } from '../lib/showin-stack';
+import { ShareNoteStack } from '../lib/sharenote-stack';
 
 const app = new cdk.App();
 
@@ -8,8 +8,9 @@ const environment = process.env.CDK_ENV || 'dev';
 const account = process.env.CDK_ACCOUNT;
 const region = process.env.CDK_REGION || 'ap-northeast-1';
 
-new ShowinStack(app, `showin-${environment}`, {
+// 新しいAlexaスキル「共有手帳」用のスタック
+new ShareNoteStack(app, `sharenote-${environment}`, {
   env: { account, region },
-  projectName: 'showin',
+  projectName: 'sharenote',
   environment: environment,
 });

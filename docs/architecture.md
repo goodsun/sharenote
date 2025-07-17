@@ -1,6 +1,6 @@
-# 松蔭（showIN） - System Architecture
+# 共有手帳（shareNOTE） - System Architecture
 
-*Generated from ideanotes project - 2025-07-12*
+_Generated from ideanotes project - 2025-07-12_
 
 ## 🏗️ Overview
 
@@ -13,6 +13,7 @@
 ## 📊 Component Design
 
 ### 1. Alexa Skills Kit Interface
+
 ```yaml
 Interaction Model:
   - Invocation Name: "ボイスメモ"
@@ -22,6 +23,7 @@ Interaction Model:
 ```
 
 ### 2. AWS Lambda Function
+
 ```yaml
 Configuration:
   Runtime: Node.js 20.x
@@ -40,25 +42,27 @@ IAM Role:
 ```
 
 ### 3. DynamoDB Table
+
 ```yaml
 Table Design:
-  Name: showin-{env}-memos
+  Name: sharenote-{env}-memos
   Partition Key: userId (String)
   Sort Key: memoId (String)
-  
+
 Global Secondary Indexes:
   family-timestamp-index:
     Partition Key: familyId
     Sort Key: timestamp
-    
+
   family-updatedAt-index:
-    Partition Key: familyId  
+    Partition Key: familyId
     Sort Key: updatedAt
 ```
 
 ## 🔄 Data Flow
 
 ### Add Memo Flow
+
 ```
 1. User: "メモに牛乳を買うを追加"
 2. Alexa Skills Kit → Lambda invocation
@@ -70,6 +74,7 @@ Global Secondary Indexes:
 ```
 
 ### Read Memos Flow
+
 ```
 1. User: "メモを読んで"
 2. Alexa Skills Kit → Lambda invocation
@@ -80,6 +85,7 @@ Global Secondary Indexes:
 ```
 
 ### Delete Memo Flow
+
 ```
 1. User: "1番目のメモを削除"
 2. Alexa Skills Kit → Lambda invocation
@@ -93,6 +99,7 @@ Global Secondary Indexes:
 ## 🔧 Technical Architecture
 
 ### CDK Stack Structure
+
 ```typescript
 AlexaVoiceMemoStack
 ├── DynamoDB Tables
@@ -114,6 +121,7 @@ AlexaVoiceMemoStack
 ```
 
 ### Lambda Handler Architecture
+
 ```typescript
 src/
 ├── common/
@@ -128,13 +136,14 @@ src/
 └── types.ts                // Alexa-specific types
 
 lib/
-├── showin-stack.ts              // CDK stack definition
-└── showin-stack.WebApiHandler.ts // Web API Lambda handler
+├── sharenote-stack.ts           // CDK stack definition
+└── sharenote-stack.WebApiHandler.ts // Web API Lambda handler
 ```
 
 ## 🔒 Security Architecture
 
 ### Authentication & Authorization
+
 ```yaml
 User Authentication:
   - Alexa: userId (automatic from device)
@@ -154,6 +163,7 @@ Data Privacy:
 ```
 
 ### Data Encryption
+
 ```yaml
 At Rest:
   - DynamoDB: AWS managed encryption
@@ -169,6 +179,7 @@ In Transit:
 ## 📈 Scalability Design
 
 ### Performance Characteristics
+
 ```yaml
 Expected Load:
   - Users: 1-10 (personal use)
@@ -187,6 +198,7 @@ Lambda Scaling:
 ```
 
 ### Growth Accommodation
+
 ```yaml
 Scale to 1,000 users:
   - DynamoDB: No changes needed
@@ -202,48 +214,51 @@ Scale to 10,000 users:
 ## 🌍 Multi-Environment Design
 
 ### Environment Isolation
+
 ```yaml
 Development (dev):
-  - Stack: showin-dev
-  - Table: showin-dev-memos
-  - Function: showin-dev-handler
+  - Stack: sharenote-dev
+  - Table: sharenote-dev-memos
+  - Function: sharenote-dev-handler
 
 Staging (stg):
-  - Stack: showin-stg
-  - Table: showin-stg-memos
-  - Function: showin-stg-handler
+  - Stack: sharenote-stg
+  - Table: sharenote-stg-memos
+  - Function: sharenote-stg-handler
 
 Production (prod):
-  - Stack: showin-prod
-  - Table: showin-prod-memos
-  - Function: showin-prod-handler
+  - Stack: sharenote-prod
+  - Table: sharenote-prod-memos
+  - Function: sharenote-prod-handler
 ```
 
 ### Configuration Management
+
 ```typescript
 // Environment-specific settings
 const config = {
   dev: {
-    logLevel: 'DEBUG',
+    logLevel: "DEBUG",
     retentionDays: 7,
-    backupEnabled: false
+    backupEnabled: false,
   },
   stg: {
-    logLevel: 'INFO', 
+    logLevel: "INFO",
     retentionDays: 30,
-    backupEnabled: true
+    backupEnabled: true,
   },
   prod: {
-    logLevel: 'WARN',
+    logLevel: "WARN",
     retentionDays: 90,
-    backupEnabled: true
-  }
+    backupEnabled: true,
+  },
 };
 ```
 
 ## 🔍 Monitoring Architecture
 
 ### Observability Stack
+
 ```yaml
 Metrics (CloudWatch):
   - Lambda: Duration, Errors, Invocations
@@ -262,14 +277,15 @@ Alarms:
 ```
 
 ### Debugging Support
+
 ```typescript
 // Structured logging example
-logger.info('Memo operation', {
+logger.info("Memo operation", {
   userId: request.session.user.userId,
-  operation: 'addMemo',
+  operation: "addMemo",
   memoText: sanitizedText,
   requestId: request.requestId,
-  timestamp: new Date().toISOString()
+  timestamp: new Date().toISOString(),
 });
 ```
 

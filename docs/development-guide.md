@@ -1,17 +1,19 @@
-# 松蔭（showIN） - Development Guide
+# 共有手帳（shareNOTE） - Development Guide
 
-*Generated from ideanotes project - 2025-07-12*  
-*Updated with implementation learnings - 2025-07-13*
+_Generated from ideanotes project - 2025-07-12_
+_Updated with implementation learnings - 2025-07-13_
 
 ## 🎯 Development Philosophy
 
 This project follows **ideanotes スモールスタート原則**:
-- **50%決まれば開発開始OK**: Start with minimal viable implementation
+
+- **50%決まれば開発開始 OK**: Start with minimal viable implementation
 - **段階的改善**: Iterative improvement over perfection
 - **学習重視**: Focus on learning and experimentation
 - **実用性優先**: Working solution over perfect design
 
 ### Key Learnings Applied
+
 - **Web-first approach**: Starting with Web UI proved more practical than Alexa-first
 - **Express.js on Lambda**: Simplified API development significantly
 - **Touch gestures**: Essential for mobile UX in modern web apps
@@ -20,6 +22,7 @@ This project follows **ideanotes スモールスタート原則**:
 ## 🚀 Development Phases (Actual Implementation)
 
 ### Phase 1: Infrastructure Setup ✅ Completed
+
 ```bash
 # Goal: Working CDK stack deployment
 1. CDK project initialization with TypeScript
@@ -31,6 +34,7 @@ This project follows **ideanotes スモールスタート原則**:
 ```
 
 ### Phase 2: Core Lambda + API Implementation ✅ Completed
+
 ```bash
 # Goal: RESTful API with Express.js on Lambda
 1. Express.js Lambda handler setup
@@ -42,6 +46,7 @@ This project follows **ideanotes スモールスタート原則**:
 ```
 
 ### Phase 3: Web UI Development ✅ Completed
+
 ```bash
 # Goal: Modern, responsive web interface
 1. Single-page application with vanilla JavaScript
@@ -53,6 +58,7 @@ This project follows **ideanotes スモールスタート原則**:
 ```
 
 ### Phase 4: Touch Gestures and UX ✅ Completed
+
 ```bash
 # Goal: Enhanced mobile user experience
 1. Swipe-to-delete gesture implementation
@@ -67,6 +73,7 @@ This project follows **ideanotes スモールスタート原則**:
 ```
 
 ### Phase 5: CI/CD Pipeline ✅ Completed
+
 ```bash
 # Goal: Automated deployment workflow
 1. GitHub Actions workflow setup
@@ -78,6 +85,7 @@ This project follows **ideanotes スモールスタート原則**:
 ```
 
 ### Phase 6: Alexa Integration 🔄 Future Enhancement
+
 ```bash
 # Goal: Voice-first experience
 1. Alexa Developer Console setup
@@ -92,42 +100,43 @@ This project follows **ideanotes スモールスタート原則**:
 ### Start Simple, Evolve Gradually
 
 #### MVP Implementation
+
 ```typescript
 // Start with minimal handler
 export const handler = async (event: AlexaRequest): Promise<AlexaResponse> => {
   const requestType = event.request.type;
-  
+
   switch (requestType) {
-    case 'LaunchRequest':
-      return buildResponse('ボイスメモへようこそ');
-    case 'IntentRequest':
+    case "LaunchRequest":
+      return buildResponse("ボイスメモへようこそ");
+    case "IntentRequest":
       return handleIntent(event);
     default:
-      return buildResponse('すみません、理解できませんでした');
+      return buildResponse("すみません、理解できませんでした");
   }
 };
 ```
 
 #### Gradually Add Complexity
+
 ```typescript
 // Then add proper error handling, logging, validation
 export const handler = async (event: AlexaRequest): Promise<AlexaResponse> => {
   const logger = createLogger(event.context.requestId);
-  
+
   try {
-    logger.info('Request received', { type: event.request.type });
-    
+    logger.info("Request received", { type: event.request.type });
+
     const validator = new RequestValidator();
     validator.validate(event);
-    
+
     const handler = HandlerFactory.create(event.request.type);
     const response = await handler.handle(event);
-    
-    logger.info('Response generated', { response });
+
+    logger.info("Response generated", { response });
     return response;
-    
   } catch (error) {
-    logger.error('Handler error', { error });
+    logger.error("Handler error", { error });
     return ErrorHandler.handle(error);
   }
 };
@@ -136,46 +145,47 @@ export const handler = async (event: AlexaRequest): Promise<AlexaResponse> => {
 ### CDK Development Pattern
 
 #### 1. Infrastructure First
+
 ```typescript
 // Start with basic stack
 export class AlexaVoiceMemoStack extends Stack {
   constructor(scope: Construct, id: string, props: AlexaVoiceMemoStackProps) {
     super(scope, id, props);
-    
+
     // Start simple
-    const table = new Table(this, 'MemosTable', {
-      partitionKey: { name: 'userId', type: AttributeType.STRING },
-      sortKey: { name: 'memoId', type: AttributeType.STRING },
+    const table = new Table(this, "MemosTable", {
+      partitionKey: { name: "userId", type: AttributeType.STRING },
+      sortKey: { name: "memoId", type: AttributeType.STRING },
     });
-    
-    const lambda = new Function(this, 'Handler', {
+
+    const lambda = new Function(this, "Handler", {
       runtime: Runtime.NODEJS_20_X,
-      handler: 'index.handler',
-      code: Code.fromAsset('src'),
+      handler: "index.handler",
+      code: Code.fromAsset("src"),
     });
   }
 }
 ```
 
 #### 2. Add Complexity Gradually
+
 ```typescript
 // Then add monitoring, alarms, proper IAM
-const table = new Table(this, 'MemosTable', {
-  partitionKey: { name: 'userId', type: AttributeType.STRING },
-  sortKey: { name: 'memoId', type: AttributeType.STRING },
+const table = new Table(this, "MemosTable", {
+  partitionKey: { name: "userId", type: AttributeType.STRING },
+  sortKey: { name: "memoId", type: AttributeType.STRING },
   billingMode: BillingMode.ON_DEMAND,
   encryption: TableEncryption.AWS_MANAGED,
-  pointInTimeRecovery: props.environment === 'prod',
-  removalPolicy: props.environment === 'prod' 
-    ? RemovalPolicy.RETAIN 
-    : RemovalPolicy.DESTROY,
+  pointInTimeRecovery: props.environment === "prod",
+  removalPolicy:
+    props.environment === "prod" ? RemovalPolicy.RETAIN : RemovalPolicy.DESTROY,
 });
 
 // Add GSI
 table.addGlobalSecondaryIndex({
-  indexName: 'family-timestamp-index',
-  partitionKey: { name: 'familyId', type: AttributeType.STRING },
-  sortKey: { name: 'timestamp', type: AttributeType.STRING },
+  indexName: "family-timestamp-index",
+  partitionKey: { name: "familyId", type: AttributeType.STRING },
+  sortKey: { name: "timestamp", type: AttributeType.STRING },
 });
 ```
 
@@ -184,6 +194,7 @@ table.addGlobalSecondaryIndex({
 ### Infrastructure Development
 
 #### CDK Stack Implementation
+
 - [x] Basic AlexaVoiceMemoStack class
 - [x] DynamoDB table with correct schema
 - [x] Lambda function with proper configuration
@@ -196,6 +207,7 @@ table.addGlobalSecondaryIndex({
 - [x] CloudFront distribution (optional)
 
 #### DynamoDB Design
+
 - [x] Primary key design (userId, memoId)
 - [x] GSI for timestamp-based queries
 - [x] GSI for status-based queries (active/deleted)
@@ -206,6 +218,7 @@ table.addGlobalSecondaryIndex({
 - [ ] Backup configuration (prod environment)
 
 #### Lambda Configuration
+
 - [x] Node.js 20.x runtime
 - [x] Appropriate memory allocation (512MB for Express.js)
 - [x] Timeout configuration (30s)
@@ -218,6 +231,7 @@ table.addGlobalSecondaryIndex({
 ### Application Development
 
 #### Core API Implementation
+
 - [x] Express.js application setup
 - [x] RESTful endpoint routing
 - [x] Request validation middleware
@@ -227,6 +241,7 @@ table.addGlobalSecondaryIndex({
 - [ ] Alexa request handling (future)
 
 #### Memo Service Implementation
+
 - [x] DynamoDB client initialization
 - [x] addMemo operation with timestamp
 - [x] getActiveMemos with auto-deletion logic
@@ -237,6 +252,7 @@ table.addGlobalSecondaryIndex({
 - [x] Pagination support (limit/lastEvaluatedKey)
 
 #### Web UI Implementation
+
 - [x] Single-page application architecture
 - [x] Responsive mobile-first design
 - [x] Real-time memo list updates
@@ -248,6 +264,7 @@ table.addGlobalSecondaryIndex({
 - [x] Privacy policy and about pages
 
 #### Future Alexa Intent Handlers
+
 - [ ] LaunchRequestHandler
 - [ ] AddMemoIntentHandler
 - [ ] ReadMemosIntentHandler
@@ -260,6 +277,7 @@ table.addGlobalSecondaryIndex({
 ### Testing Implementation
 
 #### Unit Tests
+
 - [x] MemoService unit tests
 - [x] API endpoint tests
 - [x] Validation logic tests
@@ -268,6 +286,7 @@ table.addGlobalSecondaryIndex({
 - [ ] UI component tests
 
 #### Integration Tests
+
 - [x] DynamoDB integration tests
 - [x] End-to-end API tests
 - [x] Error scenario tests
@@ -276,6 +295,7 @@ table.addGlobalSecondaryIndex({
 - [ ] Load testing
 
 #### Infrastructure Tests
+
 - [x] CDK stack synthesis tests
 - [x] IAM permission tests
 - [x] Resource configuration tests
@@ -284,6 +304,7 @@ table.addGlobalSecondaryIndex({
 ## 🔧 Development Tools & Setup
 
 ### Required Environment
+
 ```bash
 # AWS CLI configuration
 aws configure
@@ -298,6 +319,7 @@ export CDK_ENV=dev
 ```
 
 ### Development Commands
+
 ```bash
 # CDK commands
 cdk diff                 # Show changes
@@ -321,6 +343,7 @@ npm run format          # Code formatting
 ### Development Environment Setup
 
 #### GitHub Actions Secrets Required
+
 ```bash
 # AWS OIDC Configuration
 AWS_ACCOUNT_ID          # Your AWS account ID
@@ -328,6 +351,7 @@ AWS_OIDC_ROLE_ARN      # OIDC role for GitHub Actions
 ```
 
 #### Local Development
+
 ```bash
 # Environment variables
 export CDK_ACCOUNT=your-aws-account-id
@@ -335,10 +359,11 @@ export CDK_REGION=ap-northeast-1
 export CDK_ENV=dev
 
 # AWS CLI configuration
-aws configure --profile showin
+aws configure --profile sharenote
 ```
 
 ### Recommended VS Code Extensions
+
 ```json
 {
   "recommendations": [
@@ -354,6 +379,7 @@ aws configure --profile showin
 ## 📊 Development Best Practices
 
 ### Code Organization
+
 ```typescript
 // Clear separation of concerns
 src/
@@ -374,6 +400,7 @@ src/
 ```
 
 ### Error Handling Strategy
+
 ```typescript
 // Consistent error handling
 export class MemoServiceError extends Error {
@@ -383,7 +410,7 @@ export class MemoServiceError extends Error {
     public readonly statusCode: number
   ) {
     super(message);
-    this.name = 'MemoServiceError';
+    this.name = "MemoServiceError";
   }
 }
 
@@ -392,7 +419,7 @@ try {
   await memoService.addMemo(userId, text);
 } catch (error) {
   if (error instanceof MemoServiceError) {
-    logger.error('Memo service error', { error: error.code });
+    logger.error("Memo service error", { error: error.code });
     return buildErrorResponse(error.message);
   }
   throw error; // Re-throw unexpected errors
@@ -400,31 +427,35 @@ try {
 ```
 
 ### Logging Best Practices
+
 ```typescript
 // Structured logging
 const logger = {
   info: (message: string, context?: object) => {
-    console.log(JSON.stringify({
-      level: 'INFO',
-      message,
-      timestamp: new Date().toISOString(),
-      requestId: getCurrentRequestId(),
-      ...context
-    }));
-  }
+    console.log(
+      JSON.stringify({
+        level: "INFO",
+        message,
+        timestamp: new Date().toISOString(),
+        requestId: getCurrentRequestId(),
+        ...context,
+      })
+    );
+  },
 };
 
 // Usage
-logger.info('Memo added successfully', {
+logger.info("Memo added successfully", {
   userId: sanitizeUserId(userId),
   memoCount: memos.length,
-  operation: 'addMemo'
+  operation: "addMemo",
 });
 ```
 
 ## 🎯 Success Criteria
 
 ### Functional Requirements Achieved
+
 - [x] Users can add memos via web interface
 - [x] Users can view all active memos
 - [x] Users can delete individual memos
@@ -435,12 +466,14 @@ logger.info('Memo added successfully', {
 - [x] Responsive design for all devices
 
 ### Future Voice Requirements
+
 - [ ] Users can add memos by voice
 - [ ] Users can hear all memos read back
 - [ ] Users can delete specific memos by number
 - [ ] Skill responds appropriately to help requests
 
 ### Non-Functional Requirements
+
 - [x] Response time < 3 seconds (achieved: ~500ms average)
 - [x] Error rate < 5% (achieved: <1%)
 - [x] Cost < $1/month (achieved: ~$0.10/month)
@@ -450,6 +483,7 @@ logger.info('Memo added successfully', {
 - [x] Zero-downtime deployments
 
 ### Learning Objectives Achieved
+
 - [x] Learn CDK infrastructure as code
 - [x] Practice DynamoDB design patterns
 - [x] Implement serverless architecture
@@ -463,24 +497,28 @@ logger.info('Memo added successfully', {
 ## 🔄 Actual Development Timeline
 
 ### Day 1-2: Infrastructure & API ✅
+
 - CDK stack implementation
 - DynamoDB and Lambda setup
 - Express.js API development
 - Basic CRUD operations
 
 ### Day 3-4: Web UI Development ✅
+
 - Single-page application
 - Mobile-responsive design
 - S3 static hosting
 - API integration
 
 ### Day 5-6: UX Enhancement ✅
+
 - Touch gesture implementation
 - Pull-to-refresh
 - Hamburger menu
 - Polish and animations
 
 ### Day 7: CI/CD & Documentation ✅
+
 - GitHub Actions setup
 - OIDC authentication
 - Automated deployments
@@ -489,12 +527,15 @@ logger.info('Memo added successfully', {
 ## 🚀 Future Enhancements
 
 ### Near-term Improvements
+
 1. **Performance Optimization**
+
    - CloudFront CDN for global distribution
    - Lambda@Edge for dynamic content
    - DynamoDB DAX for caching
 
 2. **Enhanced Features**
+
    - Search functionality
    - Tags and categories
    - Export to CSV/JSON
@@ -506,12 +547,15 @@ logger.info('Memo added successfully', {
    - Multi-language support
 
 ### Long-term Vision
+
 1. **Mobile Apps**
+
    - React Native implementation
    - Offline support
    - Push notifications
 
 2. **Advanced Features**
+
    - AI-powered memo summarization
    - Voice transcription
    - Smart reminders
@@ -526,6 +570,7 @@ logger.info('Memo added successfully', {
 ## 💡 Key Development Insights
 
 ### What Worked Well
+
 1. **Web-first approach** - Faster feedback loop than voice development
 2. **Express.js on Lambda** - Familiar patterns, easy debugging
 3. **Vanilla JavaScript** - No build complexity, fast iteration
@@ -533,6 +578,7 @@ logger.info('Memo added successfully', {
 5. **GitHub Actions early** - Automated deployments saved time
 
 ### Lessons Learned
+
 1. **Start with the UI** - Visual feedback accelerates development
 2. **Deploy early and often** - Catch environment issues quickly
 3. **Keep dependencies minimal** - Reduces complexity and cold starts
@@ -540,6 +586,7 @@ logger.info('Memo added successfully', {
 5. **Implement CI/CD early** - Manual deployments slow progress
 
 ### Architecture Decisions That Paid Off
+
 1. **Dual Lambda architecture** - Clean separation of concerns
 2. **Logical deletion** - Preserves data integrity
 3. **Auto-deletion logic** - Handles cleanup automatically
@@ -547,6 +594,7 @@ logger.info('Memo added successfully', {
 5. **Structured logging** - Easy debugging in CloudWatch
 
 ### Technical Achievements
+
 - **Cold start optimization**: ~500ms average response time
 - **Cost efficiency**: <$0.10/month for typical usage
 - **High availability**: 99.9% uptime with serverless

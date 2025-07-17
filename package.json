@@ -1,9 +1,9 @@
 {
-  "name": "showin",
+  "name": "sharenote",
   "version": "1.0.0",
-  "description": "松蔭（showIN） - 声でつなぐ、家族の知恵",
+  "description": "共有手帳（shareNOTE） - 声でつなぐ、家族の知恵",
   "bin": {
-    "showin": "bin/showin.js"
+    "sharenote": "bin/sharenote.js"
   },
   "scripts": {
     "build": "tsc",
@@ -11,21 +11,20 @@
     "build:web-api": "node scripts/build-web-api.js",
     "build:frontend": "node scripts/build-frontend.js",
     "build:frontend:dev": "node scripts/build-frontend.js --env=dev",
-    "build:frontend:stg": "node scripts/build-frontend.js --env=stg", 
+    "build:frontend:stg": "node scripts/build-frontend.js --env=stg",
     "build:frontend:prod": "node scripts/build-frontend.js --env=prod",
     "watch": "tsc -w",
     "test": "jest",
     "cdk": "cdk",
     "env:dev": "CDK_ENV=dev source scripts/set-env.sh",
-    "env:stg": "CDK_ENV=stg source scripts/set-env.sh", 
+    "env:stg": "CDK_ENV=stg source scripts/set-env.sh",
     "env:prod": "CDK_ENV=prod source scripts/set-env.sh",
     "deploy": "./scripts/deploy-simple.sh",
     "deploy:dev": "CDK_ENV=dev ./scripts/deploy-simple.sh",
     "deploy:stg": "CDK_ENV=stg ./scripts/deploy-simple.sh",
     "deploy:prod": "CDK_ENV=prod ./scripts/deploy-simple.sh",
-    "deploy:frontend": "npm run build:frontend && aws s3 sync ./build/frontend/ s3://$(aws cloudformation describe-stacks --stack-name showin-${CDK_ENV:-dev} --query 'Stacks[0].Outputs[?OutputKey==`FrontendBucketName`].OutputValue' --output text) --delete",
+    "deploy:frontend": "npm run build:frontend && aws s3 sync ./build/frontend/ s3://$(aws cloudformation describe-stacks --stack-name sharenote-${CDK_ENV:-dev} --query 'Stacks[0].Outputs[?OutputKey==`FrontendBucketName`].OutputValue' --output text) --delete",
     "deploy:ec2": "npm run build:frontend && rsync -avz --delete ./build/frontend/ ec2-user@${EC2_HOST}:/var/www/memo/",
-    "deploy:initial": "./scripts/initial-deploy.sh",
     "prebuild": "mkdir -p dist build/frontend",
     "prebuild:frontend": "mkdir -p build/frontend"
   },

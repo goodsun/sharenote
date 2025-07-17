@@ -18,7 +18,7 @@ export class EncryptionUtil {
       }
       
       // 環境変数のキーから固定の暗号化キーを生成
-      const salt = crypto.createHash('sha256').update('showin-salt').digest();
+      const salt = crypto.createHash('sha256').update('sharenote-salt').digest();
       this.key = crypto.pbkdf2Sync(encryptionKey, salt, ITERATIONS, KEY_LENGTH, 'sha256');
     }
     return this.key;
@@ -55,6 +55,12 @@ export class EncryptionUtil {
       const key = this.getKey();
       const combined = Buffer.from(encryptedData, 'base64');
       
+      // 暗号化データの最小長チェック（IV + Tag = 32バイト）
+      if (combined.length < IV_LENGTH + TAG_LENGTH) {
+        console.warn('Data appears to be plaintext, returning as-is');
+        return encryptedData;
+      }
+      
       // IV, Tag, Encrypted Data を分離
       const iv = combined.slice(0, IV_LENGTH);
       const tag = combined.slice(IV_LENGTH, IV_LENGTH + TAG_LENGTH);
@@ -70,8 +76,9 @@ export class EncryptionUtil {
       
       return decrypted.toString('utf8');
     } catch (error) {
-      console.error('Decryption failed:', error);
-      throw new Error('Failed to decrypt data');
+      console.warn('Decryption failed, treating as plaintext:', error);
+      // 復号化に失敗した場合は平文として扱う（後方互換性）
+      return encryptedData;
     }
   }
 
@@ -97,9 +104,9 @@ export class EncryptionUtil {
   ): T {
     const decrypted = { ...item };
     
-    // 暗号化バージョンがない場合はエラー
+    // 暗号化バージョンがない場合は暗号化されていないと判断
     if (!(item as any)._encryptionVersion) {
-      throw new Error('Data is not encrypted');
+      return decrypted;
     }
     
     for (const field of fields) {

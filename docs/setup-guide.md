@@ -1,10 +1,11 @@
-# 松蔭（showIN） - Setup Guide
+# 共有手帳（shareNOTE） - Setup Guide
 
-*Generated from ideanotes project - 2025-07-12*
+_Generated from ideanotes project - 2025-07-12_
 
 ## 🚀 Prerequisites
 
 ### Required Software
+
 ```bash
 # Node.js (v18 or later)
 node --version  # Should be 18+
@@ -12,12 +13,13 @@ node --version  # Should be 18+
 # AWS CLI v2
 aws --version   # Should be 2.x
 
-# AWS CDK CLI  
+# AWS CDK CLI
 npm install -g aws-cdk
 cdk --version   # Should be 2.x
 ```
 
 ### AWS Account Requirements
+
 - Active AWS account
 - IAM user with sufficient permissions
 - Existing CDK bootstrap (can reuse from web3cdk)
@@ -25,6 +27,7 @@ cdk --version   # Should be 2.x
 ## ⚙️ Environment Setup
 
 ### 1. AWS Credentials Configuration
+
 ```bash
 # Configure AWS CLI (if not already done)
 aws configure
@@ -34,6 +37,7 @@ aws sts get-caller-identity
 ```
 
 ### 2. Environment Variables
+
 ```bash
 # Required environment variables
 export CDK_ACCOUNT=$(aws sts get-caller-identity --query Account --output text)
@@ -42,11 +46,12 @@ export CDK_ENV=dev
 
 # Verify settings
 echo "Account: $CDK_ACCOUNT"
-echo "Region: $CDK_REGION" 
+echo "Region: $CDK_REGION"
 echo "Environment: $CDK_ENV"
 ```
 
 ### 3. CDK Bootstrap Verification
+
 ```bash
 # Check if bootstrap exists (from web3cdk or other projects)
 aws cloudformation describe-stacks --stack-name CDKToolkit --region $CDK_REGION
@@ -64,10 +69,11 @@ cdk bootstrap aws://$CDK_ACCOUNT/$CDK_REGION
 Refer to [Project Setup Lessons Learned](./project-setup-lessons.md) for detailed explanation of why this matters.
 
 #### Recommended Approach (Clean Start)
+
 ```bash
 # 1. Create empty project directory
-mkdir showin
-cd showin
+mkdir sharenote
+cd sharenote
 
 # 2. Initialize CDK (must be empty!)
 cdk init app --language typescript
@@ -89,6 +95,7 @@ git commit -m "Add project documentation"
 ```
 
 #### Alternative: Existing Repository Setup
+
 ```bash
 # If you already have a repository with docs:
 
@@ -111,6 +118,7 @@ rm -rf backup/
 ### 1. CDK Project Setup (Legacy Documentation)
 
 ### 2. Dependencies Installation
+
 ```bash
 # Install additional dependencies
 npm install @aws-cdk/aws-dynamodb @aws-cdk/aws-lambda @aws-cdk/aws-iam
@@ -123,6 +131,7 @@ npm list
 ```
 
 ### 3. TypeScript Configuration
+
 ```bash
 # Verify TypeScript compilation
 npm run build
@@ -134,13 +143,12 @@ npm run watch &
 ## 🔧 Project Configuration
 
 ### 1. Update cdk.json
+
 ```json
 {
-  "app": "npx ts-node --project tsconfig.json bin/showin.ts",
+  "app": "npx ts-node --project tsconfig.json bin/sharenote.ts",
   "watch": {
-    "include": [
-      "**"
-    ],
+    "include": ["**"],
     "exclude": [
       "README.md",
       "cdk*.json",
@@ -160,6 +168,7 @@ npm run watch &
 ```
 
 ### 2. Update package.json Scripts
+
 ```json
 {
   "scripts": {
@@ -177,6 +186,7 @@ npm run watch &
 ```
 
 ### 3. Jest Configuration
+
 ```json
 // jest.config.js
 module.exports = {
@@ -192,12 +202,13 @@ module.exports = {
 ## 🏗️ Initial Implementation
 
 ### 1. Create Basic Stack Structure
-```bash
-# Create lib/showin-stack.ts
-touch lib/showin-stack.ts
 
-# Create bin/showin.ts
-touch bin/showin.ts
+```bash
+# Create lib/sharenote-stack.ts
+touch lib/sharenote-stack.ts
+
+# Create bin/sharenote.ts
+touch bin/sharenote.ts
 
 # Create src directory for Lambda code
 mkdir src
@@ -205,6 +216,7 @@ touch src/handler.ts
 ```
 
 ### 2. Verify CDK Synthesis
+
 ```bash
 # Generate CloudFormation template
 cdk synth
@@ -213,17 +225,19 @@ cdk synth
 ```
 
 ### 3. Initial Deployment Test
+
 ```bash
 # Deploy empty stack (optional, for verification)
-cdk deploy showin-dev
+cdk deploy sharenote-dev
 
 # Check stack in AWS Console
-aws cloudformation describe-stacks --stack-name showin-dev
+aws cloudformation describe-stacks --stack-name sharenote-dev
 ```
 
 ## 🧪 Development Environment Verification
 
 ### 1. CDK Commands Test
+
 ```bash
 # List available stacks
 cdk list
@@ -239,6 +253,7 @@ cdk context
 ```
 
 ### 2. TypeScript Compilation
+
 ```bash
 # Compile TypeScript
 npm run build
@@ -248,6 +263,7 @@ echo $?  # Should be 0
 ```
 
 ### 3. Test Framework
+
 ```bash
 # Run tests (should pass even if empty)
 npm test
@@ -259,6 +275,7 @@ npm run test -- --coverage
 ## 📋 Environment Variables Reference
 
 ### Required Variables
+
 ```bash
 CDK_ACCOUNT     # AWS account ID
 CDK_REGION      # AWS region (e.g., ap-northeast-1)
@@ -266,6 +283,7 @@ CDK_ENV         # Environment name (dev/stg/prod)
 ```
 
 ### Optional Variables
+
 ```bash
 CDK_DEFAULT_ACCOUNT   # Fallback account ID
 CDK_DEFAULT_REGION    # Fallback region
@@ -273,6 +291,7 @@ AWS_PROFILE          # AWS CLI profile name
 ```
 
 ### Setting Variables
+
 ```bash
 # Option 1: Environment variables
 export CDK_ACCOUNT=123456789012
@@ -293,6 +312,7 @@ export AWS_PROFILE=my-profile
 ### Common Issues
 
 #### 1. CDK Bootstrap Not Found
+
 ```bash
 # Error: "This stack uses assets, so the toolkit stack must be deployed..."
 # Solution: Run bootstrap
@@ -300,6 +320,7 @@ cdk bootstrap aws://$CDK_ACCOUNT/$CDK_REGION
 ```
 
 #### 2. Permission Denied
+
 ```bash
 # Error: "AccessDenied" or "Forbidden"
 # Solution: Check IAM permissions
@@ -308,6 +329,7 @@ aws iam list-attached-user-policies --user-name your-username
 ```
 
 #### 3. TypeScript Compilation Errors
+
 ```bash
 # Error: TypeScript compilation failed
 # Solution: Check tsconfig.json and dependencies
@@ -315,6 +337,7 @@ npm run build -- --verbose
 ```
 
 #### 4. CDK Version Mismatch
+
 ```bash
 # Error: CDK version conflicts
 # Solution: Update all CDK packages to same version
@@ -322,11 +345,12 @@ npm update aws-cdk-lib
 ```
 
 ### Debug Commands
+
 ```bash
 # Check AWS configuration
 aws configure list
 
-# Check CDK configuration  
+# Check CDK configuration
 cdk doctor
 
 # Verbose CDK output
@@ -339,6 +363,7 @@ CDK_DEBUG=true cdk deploy
 ## ✅ Setup Verification Checklist
 
 ### Environment Setup
+
 - [ ] Node.js 18+ installed
 - [ ] AWS CLI v2 installed and configured
 - [ ] CDK CLI installed globally
@@ -346,6 +371,7 @@ CDK_DEBUG=true cdk deploy
 - [ ] Environment variables set
 
 ### Project Setup
+
 - [ ] CDK project initialized
 - [ ] Dependencies installed
 - [ ] TypeScript compiles successfully
@@ -353,12 +379,14 @@ CDK_DEBUG=true cdk deploy
 - [ ] Test framework configured
 
 ### AWS Setup
+
 - [ ] CDK bootstrap exists
 - [ ] IAM permissions sufficient
 - [ ] Target region accessible
 - [ ] Account ID correct
 
 ### Development Ready
+
 - [ ] Watch mode working
 - [ ] Tests run successfully
 - [ ] CDK commands work

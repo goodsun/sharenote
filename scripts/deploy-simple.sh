@@ -45,7 +45,7 @@ npm run build:web-api
 
 # 3. CDKデプロイ（バックエンドとインフラ）
 echo "☁️  Deploying CDK stack..."
-npx cdk deploy showin-${CDK_ENV} --require-approval never
+npx cdk deploy sharenote-${CDK_ENV} --require-approval never
 
 # 4. API URLを取得してフロントエンドをビルド
 echo "🎨 Building frontend with actual API URL..."

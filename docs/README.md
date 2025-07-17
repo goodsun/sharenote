@@ -1,4 +1,4 @@
-# 松蔭（showIN） - Documentation
+# 共有手帳（shareNOTE） - Documentation
 
 _Generated from ideanotes project - 2025-07-12_
 
@@ -22,7 +22,7 @@ _Generated from ideanotes project - 2025-07-12_
 
 ### 📊 Operations
 
-- [**postmortem-20250113.md**](postmortem-20250113.md) - CI/CD実装の反省と教訓
+- [**postmortem-20250113.md**](postmortem-20250113.md) - CI/CD 実装の反省と教訓
 - [**deployment-checklist.md**](deployment-checklist.md) - デプロイ前チェックリスト
 
 ## 🚀 Quick Start

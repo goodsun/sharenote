@@ -1,4 +1,4 @@
-# 松蔭（showIN） - CDK 実装仕様書
+# 共有手帳（shareNOTE） - CDK 実装仕様書
 
 _2025-07-13 - Updated to reflect current implementation_
 
@@ -6,7 +6,7 @@ _2025-07-13 - Updated to reflect current implementation_
 
 ### アーキテクチャ戦略
 
-- **アプリケーション**: 独立リポジトリ（`showin`）で開発
+- **アプリケーション**: 独立リポジトリ（`sharenote`）で開発
 - **インフラ**: CDK で完全管理（Web UI + API + Alexa 統合）
 - **管理方針**: 完全独立管理（bootstrap のみ共有）
 - **デプロイ**: GitHub Actions CI/CD による S3 自動デプロイ
@@ -15,21 +15,21 @@ _2025-07-13 - Updated to reflect current implementation_
 
 - **Bootstrap**: web3cdk の既存 bootstrap 活用（同一 AWS アカウント・リージョン）
 - **スタック**: 完全独立管理
-- **リポジトリ**: showin 独立リポジトリで管理
+- **リポジトリ**: sharenote 独立リポジトリで管理
 
 ## 🏗️ インフラ仕様
 
 ### CDK スタック設計
 
-#### showin-stack.ts
+#### sharenote-stack.ts
 
 ```typescript
-export interface AlexaVoiceMemoStackProps extends cdk.StackProps {
+export interface ShareNoteStackProps extends cdk.StackProps {
   projectName: string;
   environment: string;
 }
 
-export class AlexaVoiceMemoStack extends cdk.Stack {
+export class ShareNoteStack extends cdk.Stack {
   public readonly alexaLambda: lambda.Function;
   public readonly webApiLambda: lambda.Function;
   public readonly memoTable: dynamodb.Table;
@@ -46,7 +46,7 @@ export class AlexaVoiceMemoStack extends cdk.Stack {
 #### 1. DynamoDB テーブル
 
 ```yaml
-テーブル名: showin-{env}-memos
+テーブル名: sharenote-{env}-memos
 パーティションキー: userId (String)
 ソートキー: memoId (String)
 グローバルセカンダリインデックス:
@@ -63,7 +63,7 @@ export class AlexaVoiceMemoStack extends cdk.Stack {
 ##### Alexa Handler Lambda
 
 ```yaml
-関数名: showin-{env}-handler
+関数名: sharenote-{env}-handler
 ランタイム: Node.js 20.x
 メモリ: 256MB
 タイムアウト: 30秒
@@ -75,20 +75,20 @@ export class AlexaVoiceMemoStack extends cdk.Stack {
 ##### Web API Lambda
 
 ```yaml
-関数名: showin-{env}-web-api
+関数名: sharenote-{env}-web-api
 ランタイム: Node.js 20.x
 メモリ: 512MB
 タイムアウト: 30秒
 環境変数:
   - MEMO_TABLE_NAME: DynamoDBテーブル名
   - ENVIRONMENT: dev/stg/prod
-  - CORS_ORIGIN: https://showin.example.com
+  - CORS_ORIGIN: https://sharenote.example.com
 ```
 
 #### 3. API Gateway
 
 ```yaml
-API名: showin-{env}-api
+API名: sharenote-{env}-api
 タイプ: REST API
 エンドポイント:
   - GET /memos - メモ一覧取得
@@ -104,7 +104,7 @@ CORS: 有効（Web UIアクセス用）
 #### 4. S3 バケット（Web UI）
 
 ```yaml
-バケット名: showin-{env}-web
+バケット名: sharenote-{env}-web
 静的ウェブサイトホスティング: 有効
 公開アクセス: CloudFront経由のみ
 ファイル構成:
@@ -120,7 +120,7 @@ CORS: 有効（Web UIアクセス用）
 ```yaml
 ディストリビューション: Web UI配信用
 オリジン: S3バケット
-カスタムドメイン: showin.example.com（オプション）
+カスタムドメイン: sharenote.example.com（オプション）
 SSL証明書: CloudFront デフォルト
 キャッシュ動作: 静的コンテンツに最適化
 ```
@@ -130,7 +130,7 @@ SSL証明書: CloudFront デフォルト
 ##### Alexa Lambda ロール
 
 ```yaml
-ロール名: showin-{env}-alexa-lambda-role
+ロール名: sharenote-{env}-alexa-lambda-role
 ポリシー:
   - DynamoDB: Table読み書き権限
   - CloudWatch: ログ出力権限
@@ -140,7 +140,7 @@ SSL証明書: CloudFront デフォルト
 ##### Web API Lambda ロール
 
 ```yaml
-ロール名: showin-{env}-web-api-lambda-role
+ロール名: sharenote-{env}-web-api-lambda-role
 ポリシー:
   - DynamoDB: Table読み書き権限（完全削除含む）
   - CloudWatch: ログ出力権限
@@ -302,12 +302,12 @@ web/
 
 ### CDK デプロイ
 
-#### bin/showin.ts
+#### bin/sharenote.ts
 
 ```typescript
 #!/usr/bin/env node
 import * as cdk from "aws-cdk-lib";
-import { AlexaVoiceMemoStack } from "../lib/showin-stack";
+import { ShareNoteStack } from "../lib/sharenote-stack";
 
 const app = new cdk.App();
 
@@ -315,10 +315,10 @@ const environment = process.env.CDK_ENV || "dev";
 const account = process.env.CDK_ACCOUNT;
 const region = process.env.CDK_REGION || "ap-northeast-1";
 
-new AlexaVoiceMemoStack(app, `showin-${environment}`, {
+new ShareNoteStack(app, `sharenote-${environment}`, {
   env: { account, region },
   environment: environment,
-  projectName: "showin",
+  projectName: "sharenote",
 });
 ```
 
@@ -364,7 +364,7 @@ CDK_REGION=ap-northeast-1
 CDK_ENV=dev
 
 # GitHub Secrets
-S3_BUCKET_NAME=showin-dev-web
+S3_BUCKET_NAME=sharenote-dev-web
 CLOUDFRONT_DISTRIBUTION_ID=EXXXXXXXXXXXXX
 ```
 
@@ -383,13 +383,13 @@ npm install
 cdk diff
 
 # 4. インフラデプロイ
-cdk deploy showin-dev
+cdk deploy sharenote-dev
 
 # 5. Web UIデプロイ（GitHub Actions経由）
 git push origin main
 
 # 6. 削除（必要時）
-cdk destroy showin-dev
+cdk destroy sharenote-dev
 ```
 
 ## 🧪 テスト仕様
@@ -397,8 +397,8 @@ cdk destroy showin-dev
 ### インフラテスト
 
 ```typescript
-// test/showin-stack.test.ts
-describe("AlexaVoiceMemoStack", () => {
+// test/sharenote-stack.test.ts
+describe("ShareNoteStack", () => {
   test("DynamoDB table created with TTL configuration");
   test("Both Lambda functions have proper IAM permissions");
   test("API Gateway configured with CORS");
@@ -618,14 +618,14 @@ CloudWatch:
 
 ## 📁 ディレクトリ構成
 
-### showin リポジトリ
+### sharenote リポジトリ
 
 ```
-showin/
+sharenote/
 ├── bin/
-│   └── showin.ts           # CDKアプリエントリーポイント
+│   └── sharenote.ts        # CDKアプリエントリーポイント
 ├── lib/
-│   └── showin-stack.ts     # CDKスタック定義
+│   └── sharenote-stack.ts  # CDKスタック定義
 ├── src/
 │   ├── alexa-handler.ts              # Alexa Lambda ハンドラー
 │   ├── web-api-handler.ts            # Web API Lambda ハンドラー
@@ -642,7 +642,7 @@ showin/
 ├── test/
 │   ├── alexa-handler.test.ts
 │   ├── web-api-handler.test.ts
-│   └── showin-stack.test.ts
+│   └── sharenote-stack.test.ts
 ├── .github/
 │   └── workflows/
 │       └── deploy-web.yml            # CI/CD設定

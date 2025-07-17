@@ -1,6 +1,6 @@
 # Environment Expansion TODO List
 
-*Ready-to-execute checklist for scaling 松蔭（showIN） environments*
+_Ready-to-execute checklist for scaling 共有手帳（shareNOTE） environments_
 
 ## 🎯 Phase Planning Overview
 
@@ -13,13 +13,16 @@ Future: Add Production Environment 🎯
 ## 📋 Phase 2: Add Staging Environment
 
 ### Prerequisites Checklist
+
 - [ ] Multiple developers confirmed OR
-- [ ] Complex features requiring UAT OR  
+- [ ] Complex features requiring UAT OR
 - [ ] Monthly active users > 50 OR
 - [ ] Business stakeholder review needed
 
 ### Configuration Tasks
+
 - [ ] **Create staging configuration**
+
   ```bash
   cp .env.dev .env.stg
   # Edit .env.stg with staging-specific values
@@ -32,7 +35,9 @@ Future: Add Production Environment 🎯
   - [ ] Setup `CDK_ENV=stg` environment variables
 
 ### Infrastructure Deployment
+
 - [ ] **Deploy staging stack**
+
   ```bash
   export CDK_ENV=stg
   cdk bootstrap --profile staging-profile  # if different account
@@ -46,14 +51,17 @@ Future: Add Production Environment 🎯
   - [ ] IAM roles and permissions working
 
 ### Alexa Integration
+
 - [ ] **Rename existing dev skill for clarity**
-  - [ ] Rename current skill to "松蔭（showIN） Dev" 
+
+  - [ ] Rename current skill to "共有手帳（shareNOTE） Dev"
   - [ ] Update invocation name to "ボイスメモ開発版"
   - [ ] Keep existing endpoint unchanged
 
 - [ ] **Create staging Alexa skill**
+
   - [ ] New skill in Amazon Developer Console
-  - [ ] Name: "松蔭（showIN） Staging" (internal only)
+  - [ ] Name: "共有手帳（shareNOTE） Staging" (internal only)
   - [ ] Invocation name: "ボイスメモ検証版"
   - [ ] Configure staging Lambda endpoint
   - [ ] Enable skill for testing devices only
@@ -61,12 +69,14 @@ Future: Add Production Environment 🎯
 - [ ] **Test staging Alexa functionality**
   - [ ] Basic voice commands working
   - [ ] Add memo functionality
-  - [ ] Read memos functionality  
+  - [ ] Read memos functionality
   - [ ] Delete memo functionality
   - [ ] Verify data isolation from dev environment
 
 ### CI/CD Integration
+
 - [ ] **Enable staging deployment**
+
   - [ ] Uncomment staging workflow in `.github/workflows/deploy.yml`
   - [ ] Test `staging` branch auto-deployment
   - [ ] Verify integration tests run successfully
@@ -77,6 +87,7 @@ Future: Add Production Environment 🎯
   - [ ] Create staging testing checklist
 
 ### Monitoring & Alerting
+
 - [ ] **Setup staging monitoring**
   - [ ] CloudWatch dashboards for staging
   - [ ] Error rate alerts
@@ -86,6 +97,7 @@ Future: Add Production Environment 🎯
 ## 📋 Phase 3: Add Production Environment
 
 ### Prerequisites Checklist
+
 - [ ] Alexa Skills Store submission planned OR
 - [ ] SLA requirements defined OR
 - [ ] Monthly active users > 500 OR
@@ -93,7 +105,9 @@ Future: Add Production Environment 🎯
 - [ ] Compliance requirements identified
 
 ### Security & Compliance
+
 - [ ] **Security audit**
+
   - [ ] IAM permissions review
   - [ ] Data encryption verification
   - [ ] Access logging implementation
@@ -106,7 +120,9 @@ Future: Add Production Environment 🎯
   - [ ] GDPR compliance (if applicable)
 
 ### Production Configuration
+
 - [ ] **Production account setup**
+
   - [ ] Separate AWS account recommended
   - [ ] Production IAM roles and policies
   - [ ] Cross-account access (if needed)
@@ -123,7 +139,9 @@ Future: Add Production Environment 🎯
   ```
 
 ### Infrastructure & Deployment
+
 - [ ] **Production infrastructure**
+
   ```bash
   export CDK_ENV=prod
   cdk bootstrap --profile production
@@ -137,7 +155,9 @@ Future: Add Production Environment 🎯
   - [ ] Disaster recovery procedures documented
 
 ### Alexa Store Preparation
+
 - [ ] **Store submission assets**
+
   - [ ] Production skill icons (completed ✅)
   - [ ] Privacy policy URL (completed ✅)
   - [ ] Terms of use URL (completed ✅)
@@ -145,8 +165,9 @@ Future: Add Production Environment 🎯
   - [ ] Testing instructions for certification
 
 - [ ] **Production Alexa skill**
+
   - [ ] Create production skill in Amazon Developer Console
-  - [ ] Name: "松蔭（showIN）" (public name)
+  - [ ] Name: "共有手帳（shareNOTE）" (public name)
   - [ ] Invocation name: "ボイスメモ" (simple/memorable)
   - [ ] Configure production Lambda endpoint
   - [ ] Submit for Alexa Skills Store review
@@ -158,7 +179,9 @@ Future: Add Production Environment 🎯
   - [ ] Ensure no conflicts between dev/staging/prod skills
 
 ### Monitoring & Operations
+
 - [ ] **Production monitoring**
+
   - [ ] Comprehensive CloudWatch dashboards
   - [ ] Multi-level alerting (warn/critical)
   - [ ] Performance SLA monitoring
@@ -171,7 +194,9 @@ Future: Add Production Environment 🎯
   - [ ] Release procedures documentation
 
 ### Performance & Scaling
+
 - [ ] **Performance optimization**
+
   - [ ] Lambda memory optimization
   - [ ] DynamoDB performance tuning
   - [ ] Cold start mitigation
@@ -186,6 +211,7 @@ Future: Add Production Environment 🎯
 ## 🚀 Quick Start Commands
 
 ### Staging Environment Setup
+
 ```bash
 # 1. Environment setup
 export CDK_ENV=stg
@@ -203,6 +229,7 @@ git push origin staging  # Triggers auto-deployment
 ```
 
 ### Production Environment Setup
+
 ```bash
 # 1. Security review
 npm run security:audit
@@ -225,23 +252,27 @@ aws cloudwatch put-dashboard --dashboard-name showin-prod
 ## ⚠️ Important Considerations
 
 ### Cost Impact
+
 - **Staging**: +$0.05/month (minimal testing usage)
 - **Production**: +$0.20/month (includes monitoring/alerting)
 - **Total with all environments**: ~$0.28/month
 
 ### Alexa Device Testing
+
 - **Current**: Use dev environment on personal Alexa device
 - **Staging**: Can use same device (different skill name)
 - **Production**: Available to all users after store approval
 
 ### Data Isolation
+
 - Each environment has completely separate:
   - DynamoDB tables
-  - Lambda functions  
+  - Lambda functions
   - CloudWatch logs
   - User data (no cross-contamination)
 
 ### Rollback Strategy
+
 - Each environment can be independently rolled back
 - Production rollback should be tested in staging first
 - Emergency procedures documented for each environment
@@ -251,12 +282,14 @@ aws cloudwatch put-dashboard --dashboard-name showin-prod
 ## 📞 Support & Documentation
 
 ### When You Need Staging
+
 1. Review prerequisites checklist
 2. Execute staging tasks in order
 3. Test thoroughly before marking complete
 4. Update main documentation
 
-### When You Need Production  
+### When You Need Production
+
 1. Complete staging environment first
 2. Conduct security review
 3. Plan Alexa Skills Store submission

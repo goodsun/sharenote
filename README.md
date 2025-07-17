@@ -1,10 +1,11 @@
-# 松蔭（showIN）
+# 共有手帳（shareNOTE）
 
 「声でつなぐ、家族の知恵」 - 音声でメモを管理し、家族で共有できる Alexa スキル
 
 ## 🌸 プロジェクト概要
 
-松蔭（showIN）は、吉田松陰の教育理念と日本の家族文化を現代のテクノロジーで再解釈したサービスです。音声という最も人間的なインターフェースを通じて、家族の知恵と想いを記録し、世代を超えて継承していきます。
+共有手帳（shareNOTE）は、日本の教育理念と家族文化を現代のテクノロジーで再解釈したサービスです。音声という最も人間的なインターフェースを通じて、家族の知恵と想いを記録し、世代を超えて継承していきます。
+
 
 詳細なコンセプトは[CONCEPT.md](docs/CONCEPT.md)をご覧ください。
 
@@ -95,7 +96,7 @@ cdk bootstrap aws://${CDK_ACCOUNT}/${CDK_REGION}
    - **API とサービス** → **OAuth 同意画面** を開く
    - ユーザータイプ: **外部** を選択
    - アプリ情報を入力:
-     - アプリ名: `松蔭（showIN）`
+     - アプリ名: `共有手帳（shareNOTE）`
      - ユーザーサポートメール: あなたのメールアドレス
      - 開発者連絡先情報: あなたのメールアドレス
    - スコープは追加不要（基本プロフィールのみ使用）
@@ -103,7 +104,7 @@ cdk bootstrap aws://${CDK_ACCOUNT}/${CDK_REGION}
 4. **認証情報** → **認証情報を作成** → **OAuth クライアント ID**
 5. 以下の設定を行う：
    - アプリケーションの種類: **ウェブアプリケーション**
-   - 名前: `松蔭（showIN） Web`
+   - 名前: `共有手帳（shareNOTE） Web`
    - 承認済みの JavaScript 生成元:
      - `http://localhost:8080` （開発用）
      - `http://showin-dev-frontend.s3-website-ap-northeast-1.amazonaws.com` （S3 開発環境）
@@ -133,7 +134,7 @@ cp .env.example .env.prod
 ```bash
 # 環境別の簡単デプロイ
 npm run deploy:dev   # 開発環境
-npm run deploy:stg   # ステージング環境  
+npm run deploy:stg   # ステージング環境
 npm run deploy:prod  # 本番環境
 
 # または手動で環境を指定

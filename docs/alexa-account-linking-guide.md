@@ -21,8 +21,9 @@ This guide explains how to set up Account Linking between your Alexa skill and G
 3. Click **Create Credentials** > **OAuth client ID**
 4. Choose **Web application**
 5. Configure:
-   - **Name**: `松蔭（showIN） - Account Linking`
-   - **Authorized redirect URIs**: 
+
+   - **Name**: `共有手帳（shareNOTE） - Account Linking`
+   - **Authorized redirect URIs**:
      - Add the three Alexa redirect URIs (you'll get these from Alexa Developer Console in Step 2)
      - Format: `https://pitangui.amazon.com/api/skill/link/[YOUR-VENDOR-ID]`
      - Format: `https://layla.amazon.com/api/skill/link/[YOUR-VENDOR-ID]`
@@ -40,36 +41,43 @@ This guide explains how to set up Account Linking between your Alexa skill and G
 4. Enable Account Linking with these settings:
 
 ### Authorization URI
+
 ```
 https://accounts.google.com/o/oauth2/v2/auth
 ```
 
 ### Access Token URI
+
 ```
 https://oauth2.googleapis.com/token
 ```
 
 ### Client ID
+
 ```
 [YOUR_GOOGLE_CLIENT_ID]
 ```
 
 ### Client Secret
+
 ```
 [YOUR_GOOGLE_CLIENT_SECRET]
 ```
 
 ### Scope
+
 ```
 openid email profile
 ```
 
 ### Domain List
+
 ```
 google.com
 ```
 
 ### Default Access Token Expiration Time
+
 ```
 3600
 ```
@@ -88,6 +96,7 @@ cdk deploy showin-dev
 ```
 
 Key changes:
+
 - Checks for `accessToken` in the session
 - Verifies Google token and extracts Google user ID
 - Uses Google ID as familyId (same as Web UI)
@@ -118,14 +127,17 @@ Key changes:
 ## Troubleshooting
 
 ### "アカウントをリンクしてください" message
+
 - User needs to link their account in the Alexa app
 - Check Settings > Account Linking in the skill
 
 ### "アカウントの認証に失敗しました" message
+
 - Token may be expired
 - User should unlink and relink account
 
 ### Memos not syncing
+
 - Verify both platforms are using the same Google account
 - Check CloudWatch logs for the actual familyId being used
 
@@ -139,13 +151,15 @@ Key changes:
 ## User Experience
 
 ### First Time Setup
+
 1. User enables skill: "アレクサ、ボイスメモを開いて"
-2. Alexa responds: "このスキルを使用するには、Alexaアプリでアカウントをリンクしてください"
+2. Alexa responds: "このスキルを使用するには、Alexa アプリでアカウントをリンクしてください"
 3. Alexa app shows notification to link account
 4. User links Google account
 5. Ready to use!
 
 ### Daily Usage
+
 - Once linked, works seamlessly
 - No need to mention accounts or linking
 - Memos sync automatically between Alexa and Web UI

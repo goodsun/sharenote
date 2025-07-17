@@ -8,17 +8,17 @@ import * as s3 from 'aws-cdk-lib/aws-s3';
 import * as s3deploy from 'aws-cdk-lib/aws-s3-deployment';
 import { Construct } from 'constructs';
 
-export interface ShowinStackProps extends cdk.StackProps {
+export interface ShareNoteStackProps extends cdk.StackProps {
   projectName: string;
   environment: string;
 }
 
-export class ShowinStack extends cdk.Stack {
+export class ShareNoteStack extends cdk.Stack {
   public readonly alexaLambda: lambda.Function;
   public readonly memoTable: dynamodb.Table;
   public readonly alexaRole: iam.Role;
 
-  constructor(scope: Construct, id: string, props: ShowinStackProps) {
+  constructor(scope: Construct, id: string, props: ShareNoteStackProps) {
     super(scope, id, props);
 
     const { projectName, environment } = props;
@@ -105,7 +105,7 @@ export class ShowinStack extends cdk.Stack {
         INVITE_CODE_TABLE_NAME: inviteCodeTable.tableName,
         ENVIRONMENT: environment,
         LOG_LEVEL: environment === 'prod' ? 'WARN' : 'INFO',
-        ENCRYPTION_KEY: process.env.ENCRYPTION_KEY || 'default-encryption-key-for-dev',
+        ENCRYPTION_KEY: process.env[`ENCRYPTION_KEY_${environment.toUpperCase()}`] || process.env.ENCRYPTION_KEY || 'default-encryption-key-for-dev',
       },
       logGroup: logGroup,
     });
@@ -140,7 +140,7 @@ export class ShowinStack extends cdk.Stack {
         INVITE_CODE_TABLE_NAME: inviteCodeTable.tableName,
         BUILD_TIME: new Date().toISOString(),
         CDK_ENV: environment,
-        ENCRYPTION_KEY: process.env.ENCRYPTION_KEY || 'default-encryption-key-for-dev',
+        ENCRYPTION_KEY: process.env[`ENCRYPTION_KEY_${environment.toUpperCase()}`] || process.env.ENCRYPTION_KEY || 'default-encryption-key-for-dev',
       },
     });
 

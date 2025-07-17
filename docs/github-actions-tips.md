@@ -1,6 +1,6 @@
 # GitHub Actions Tips
 
-## pathsフィルターの活用
+## paths フィルターの活用
 
 特定のファイルやディレクトリが変更された時のみワークフローを実行できます。
 
@@ -13,41 +13,44 @@ on:
       - develop
       - production
     paths:
-      - 'alexa-skills/**'  # alexa-skillsディレクトリ以下の変更
-      - '.github/workflows/deploy-alexa-skill.yml'  # このワークフロー自体
+      - "alexa-skills/**" # alexa-skillsディレクトリ以下の変更
+      - ".github/workflows/deploy-alexa-skill.yml" # このワークフロー自体
 ```
 
 ### 便利な使用例
 
 #### 1. フロントエンドのみビルド
+
 ```yaml
 name: Build Frontend
 on:
   push:
     paths:
-      - 'public/**'
-      - 'src/frontend/**'
-      - 'package.json'
+      - "public/**"
+      - "src/frontend/**"
+      - "package.json"
 ```
 
 #### 2. ドキュメント更新時はデプロイしない
+
 ```yaml
 on:
   push:
     paths-ignore:
-      - 'docs/**'
-      - '**.md'
-      - 'LICENSE'
+      - "docs/**"
+      - "**.md"
+      - "LICENSE"
 ```
 
 #### 3. 特定の拡張子のみ
+
 ```yaml
 on:
   push:
     paths:
-      - '**.ts'
-      - '**.tsx'
-      - '**.js'
+      - "**.ts"
+      - "**.tsx"
+      - "**.js"
 ```
 
 ### paths と paths-ignore
@@ -55,11 +58,12 @@ on:
 - **paths**: 指定したパスが変更された時のみ実行
 - **paths-ignore**: 指定したパス以外が変更された時に実行
 
-### 現在のshowINプロジェクトでの活用
+### 現在の shareNOTE プロジェクトでの活用
 
 1. **Deploy Alexa Skill**
+
    - `alexa-skills/`以下の変更時のみ実行
-   - Alexaスキルに関係ない変更では実行されない
+   - Alexa スキルに関係ない変更では実行されない
 
 2. **将来的な分離案**
    - フロントエンドビルド専用ワークフロー
@@ -68,13 +72,14 @@ on:
 
 ### 注意点
 
-- pathsフィルターはpushイベントとpull_requestイベントでのみ使用可能
+- paths フィルターは push イベントと pull_request イベントでのみ使用可能
 - ワークフロー自体のファイルも含めないと、ワークフローの更新が反映されない
 - マージコミットの場合は、マージされた全ての変更が対象
 
 ### デバッグ方法
 
 どのファイルが変更されたか確認：
+
 ```yaml
 - name: Show changed files
   run: |

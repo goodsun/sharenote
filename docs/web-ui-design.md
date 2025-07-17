@@ -91,7 +91,7 @@ interface RestoreResponse {
 
 1. **ヘッダー**
 
-   - タイトル「松蔭（showIN）」
+   - タイトル「共有手帳（shareNOTE）」
    - リフレッシュボタン
 
 2. **メモリスト**

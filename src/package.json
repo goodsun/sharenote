@@ -1,7 +1,7 @@
 {
-  "name": "showin-lambda",
+  "name": "sharenote-lambda",
   "version": "1.0.0",
-  "description": "Lambda function for ShowIN skill",
+  "description": "Lambda function for ShareNOTE skill",
   "main": "handler.js",
   "dependencies": {
     "@aws-sdk/client-dynamodb": "^3.0.0",

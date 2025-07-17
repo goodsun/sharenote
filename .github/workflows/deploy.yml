@@ -68,10 +68,13 @@ jobs:
           # Google Client ID
           if [ "${{ env.CDK_ENV }}" = "prod" ]; then
             echo "GOOGLE_CLIENT_ID_PROD=${{ secrets.GOOGLE_CLIENT_ID_PROD }}" >> $GITHUB_ENV
+            echo "ENCRYPTION_KEY_PROD=${{ secrets.ENCRYPTION_KEY_PROD }}" >> $GITHUB_ENV
           elif [ "${{ env.CDK_ENV }}" = "stg" ]; then
             echo "GOOGLE_CLIENT_ID_STG=${{ secrets.GOOGLE_CLIENT_ID_STG }}" >> $GITHUB_ENV
+            echo "ENCRYPTION_KEY_STG=${{ secrets.ENCRYPTION_KEY_STG }}" >> $GITHUB_ENV
           else
             echo "GOOGLE_CLIENT_ID_DEV=${{ secrets.GOOGLE_CLIENT_ID_DEV }}" >> $GITHUB_ENV
+            echo "ENCRYPTION_KEY_DEV=${{ secrets.ENCRYPTION_KEY_DEV }}" >> $GITHUB_ENV
           fi
 
       - name: Deploy all

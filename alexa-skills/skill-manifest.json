@@ -3,9 +3,9 @@
     "publishingInformation": {
       "locales": {
         "ja-JP": {
-          "name": "松蔭（showIN）",
+          "name": "共有手帳（shareNOTE）",
           "summary": "声でつなぐ、家族の知恵。日々の気づきを音声で記録し、家族で共有。",
-          "description": "松蔭（showIN）は、吉田松陰の教育理念と日本の家族文化を現代のテクノロジーで再解釈したサービスです。\n\n音声という最も人間的なインターフェースを通じて、家族の知恵と想いを記録し、世代を超えて継承していきます。\n\n主な機能：\n• 知恵の記録：日々の気づきや学びを音声で簡単に記録\n• 家族で共有：家族みんなで知恵を共有し、世代を超えて継承\n• 簡単管理：追加、確認、削除が音声で簡単に\n\n使い方の例：\n「アレクサ、松蔭を開いて」\n「今日の気づきを記録」\n「家族の知恵を読んで」\n「1番目を削除」\n\nあなたの今日が、家族の明日になる。",
+          "description": "共有手帳（shareNOTE）は、家族みんなで共有する新しい形の手帳です。日本の口伝文化と家族の知恵袋の伝統を、現代のテクノロジーで再解釈しました。\n\n音声という最も人間的なインターフェースを通じて、家族の知恵と想いを記録し、世代を超えて継承していきます。\n\n主な機能：\n• 知恵の記録：日々の気づきや学びを音声で簡単に記録\n• 家族で共有：家族みんなで知恵を共有し、世代を超えて継承\n• 簡単管理：追加、確認、削除が音声で簡単に\n\n使い方の例：\n「アレクサ、共有手帳を開いて」\n「今日の気づきを記録」\n「家族の知恵を読んで」\n「1番目を削除」\n\n一人ひとりの気づきが、みんなの知恵になる。",
           "examplePhrases": [
             "アレクサ、共有手帳を開いて",
             "アレクサ、共有手帳で今日の気づきを記録",
@@ -13,7 +13,7 @@
           ],
           "keywords": [
             "メモ",
-            "松蔭",
+            "共有手帳",
             "音声メモ",
             "リマインダー",
             "買い物リスト",
@@ -40,23 +40,23 @@
     "apis": {
       "custom": {
         "endpoint": {
-          "uri": "arn:aws:lambda:ap-northeast-1:498997347996:function:showin-dev-handler"
+          "uri": "arn:aws:lambda:ap-northeast-1:498997347996:function:sharenote-dev-handler"
         },
         "interfaces": [],
         "regions": {
           "NA": {
             "endpoint": {
-              "uri": "arn:aws:lambda:ap-northeast-1:498997347996:function:showin-dev-handler"
+              "uri": "arn:aws:lambda:ap-northeast-1:498997347996:function:sharenote-dev-handler"
             }
           },
           "EU": {
             "endpoint": {
-              "uri": "arn:aws:lambda:ap-northeast-1:498997347996:function:showin-dev-handler"
+              "uri": "arn:aws:lambda:ap-northeast-1:498997347996:function:sharenote-dev-handler"
             }
           },
           "FE": {
             "endpoint": {
-              "uri": "arn:aws:lambda:ap-northeast-1:498997347996:function:showin-dev-handler"
+              "uri": "arn:aws:lambda:ap-northeast-1:498997347996:function:sharenote-dev-handler"
             }
           }
         }
@@ -71,8 +71,8 @@
       "containsAds": false,
       "locales": {
         "ja-JP": {
-          "privacyPolicyUrl": "https://flow-theory-x.github.io/showin/privacy-policy",
-          "termsOfUseUrl": "https://flow-theory-x.github.io/showin/terms-of-use"
+          "privacyPolicyUrl": "https://flow-theory-x.github.io/sharenote/privacy-policy",
+          "termsOfUseUrl": "https://flow-theory-x.github.io/sharenote/terms-of-use"
         }
       }
     },

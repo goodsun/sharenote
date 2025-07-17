@@ -1,5 +1,5 @@
 {
-  "app": "node dist/bin/showin.js",
+  "app": "node dist/bin/sharenote.js",
   "watch": {
     "include": [
       "**"

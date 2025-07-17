@@ -12,10 +12,7 @@ export const handler = async (event: AlexaRequest): Promise<AlexaResponse> => {
 
     switch (requestType) {
       case "LaunchRequest":
-        return buildResponse(
-          "共有手帳、松蔭へようこそ。追加、読み上げ、削除ができます。",
-          false
-        );
+        return buildResponse("共有手帳へようこそ。", false);
 
       case "IntentRequest":
         return await handleIntent(event, userId);
@@ -62,7 +59,7 @@ async function handleIntent(
 
     case "AMAZON.HelpIntent":
       return buildResponse(
-        "松蔭では、メモの追加、読み上げ、削除ができます。例えば「牛乳を追加」や「一覧」と言ってください。削除は番号で「1番を削除」と指定してください。",
+        "共有手帳では、メモの追加、読み上げ、削除ができます。例えば「牛乳を追加」や「一覧」と言ってください。削除は番号で「1番を削除」と指定してください。",
         false
       );
 

@@ -3,7 +3,19 @@
   <head>
     <meta charset="UTF-8" />
     <meta name="viewport" content="width=device-width, initial-scale=1.0" />
-    <title>松蔭 (showIN)</title>
+    <title>shareNOTE</title>
+    <link rel="icon" type="image/x-icon" href="/favicon.ico" />
+    
+    <!-- iOS Safari -->
+    <link rel="apple-touch-icon" href="/icons/icon-512x512.png" />
+    <meta name="apple-mobile-web-app-capable" content="yes" />
+    <meta name="apple-mobile-web-app-status-bar-style" content="default" />
+    <meta name="apple-mobile-web-app-title" content="shareNOTE" />
+    
+    <!-- Android / PWA -->
+    <link rel="manifest" href="/manifest.json" />
+    <meta name="theme-color" content="#2196F3" />
+    
     <link rel="stylesheet" href="style.css" />
     <!-- Google Sign-In -->
     <script
@@ -16,7 +28,7 @@
   <body>
     <div class="container">
       <header>
-        <h1>松蔭</h1>
+        <h1>shareNOTE</h1>
         <div class="header-right">
           <div id="family-info" class="family-info">
             <span id="family-members-count">👤 1</span>
@@ -62,13 +74,6 @@
           </li>
           <li class="menu-separator"></li>
           <li>
-            <button id="export-csv-btn" class="menu-item">CSVエクスポート</button>
-          </li>
-          <li>
-            <button id="import-csv-btn" class="menu-item">CSVインポート</button>
-          </li>
-          <li class="menu-separator"></li>
-          <li>
             <button id="family-members-btn" class="menu-item">家族名簿</button>
           </li>
           <li>
@@ -82,7 +87,7 @@
           </li>
           <li class="menu-separator"></li>
           <li>
-            <button id="change-name-btn" class="menu-item">名前を変更</button>
+            <button id="settings-btn" class="menu-item">設定</button>
           </li>
           <li><button id="help-btn" class="menu-item">ヘルプ</button></li>
           <li class="menu-separator"></li>
@@ -101,7 +106,7 @@
       <!-- ヘルプモーダル -->
       <div id="help-modal" class="modal">
         <div class="modal-content">
-          <h2>松蔭（showIN）の使い方</h2>
+          <h2>共有手帳の使い方</h2>
           <div class="help-section">
             <h3>基本操作</h3>
             <ul>
@@ -193,10 +198,10 @@
             pattern="[0-9]{4}"
           />
           <div class="modal-buttons">
-            <button id="join-submit-btn" class="primary-btn">参加</button>
             <button id="cancel-join-btn" class="secondary-btn">
               キャンセル
             </button>
+            <button id="join-submit-btn" class="primary-btn">参加</button>
           </div>
         </div>
       </div>
@@ -212,6 +217,38 @@
         </div>
       </div>
 
+      <!-- 設定モーダル -->
+      <div id="settings-modal" class="modal">
+        <div class="modal-content">
+          <h2>設定</h2>
+
+          <div class="settings-section">
+            <h3>ユーザー設定</h3>
+            <button id="change-name-modal-btn" class="settings-btn">
+              <span class="settings-btn-icon">👤</span>
+              <span class="settings-btn-text">名前を変更</span>
+              <span class="settings-btn-arrow">›</span>
+            </button>
+          </div>
+
+          <div class="settings-section">
+            <h3>データ管理</h3>
+            <button id="export-csv-modal-btn" class="settings-btn">
+              <span class="settings-btn-icon">📥</span>
+              <span class="settings-btn-text">CSVエクスポート</span>
+              <span class="settings-btn-arrow">›</span>
+            </button>
+            <button id="import-csv-modal-btn" class="settings-btn">
+              <span class="settings-btn-icon">📤</span>
+              <span class="settings-btn-text">CSVインポート</span>
+              <span class="settings-btn-arrow">›</span>
+            </button>
+          </div>
+
+          <button id="close-settings-btn" class="close-btn">閉じる</button>
+        </div>
+      </div>
+
       <div id="pull-to-refresh" class="pull-to-refresh">
         <div class="spinner"></div>
       </div>
@@ -220,7 +257,7 @@
         <!-- ログイン画面 -->
         <div id="login-screen" class="login-screen">
           <div class="login-content">
-            <h2>松蔭</h2>
+            <h2>shareNOTE</h2>
             <p>声で繋がる共有手帳</p>
             <div id="googleSignInButton"></div>
           </div>
@@ -232,9 +269,11 @@
 
         <div id="empty-state" class="empty-state" style="display: none">
           <div class="empty-icon">📝</div>
-          <h2>メモがありません</h2>
+          <h2>共有手帳へようこそ！</h2>
           <p>
-            「アレクサ、共有手帳で〇〇を追加」<br />と話しかけてメモを追加しましょう
+            マイクボタンをタップするか<br />
+            「アレクサ、共有手帳で〇〇を追加」<br />
+            と話しかけてメモを追加しましょう
           </p>
         </div>
 

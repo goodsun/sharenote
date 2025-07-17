@@ -1,10 +1,11 @@
 # Environment Setup Guide
 
-*松蔭（showIN） - Environment Management Strategy*
+_共有手帳（shareNOTE） - Environment Management Strategy_
 
 ## 🎯 Environment Philosophy
 
 Following **ideanotes スモールスタート原則**:
+
 - **Start Simple**: Single `dev` environment for initial development
 - **Scale When Needed**: Add `staging`/`prod` when business demands it
 - **Cost Conscious**: Minimize AWS resources until required
@@ -13,6 +14,7 @@ Following **ideanotes スモールスタート原則**:
 ## 📋 Current Environment Status
 
 ### Phase 1: Development Only (Current)
+
 ```
 ✅ dev environment
    ├── 🏗️ AWS Infrastructure: showin-dev-*
@@ -26,6 +28,7 @@ Following **ideanotes スモールスタート原則**:
 ```
 
 ### Environment Configuration
+
 ```bash
 # Current .env.dev
 CDK_ACCOUNT=498997347996
@@ -44,26 +47,27 @@ INVITE_CODE_TABLE_NAME=showin-${CDK_ENV}-invite-codes
 ```
 
 ### Alexa Skills Configuration
+
 ```
 📱 Amazon Developer Console Skills:
 
 Current (Phase 1):
-├── "松蔭（showIN）" (dev skill)
+├── "共有手帳（shareNOTE）" (dev skill)
 │   ├── Endpoint: showin-dev-handler
 │   ├── Skill ID: amzn1.ask.skill.xxx-dev
 │   ├── 🏠 Personal Echo device testing
 │   └── Command: "アレクサ、ボイスメモを開いて"
 
 Future (Phase 2 - Staging):
-├── "松蔭（showIN） Dev" (renamed for clarity)
-├── "松蔭（showIN） Staging" (new staging skill)
+├── "共有手帳（shareNOTE） Dev" (renamed for clarity)
+├── "共有手帳（shareNOTE） Staging" (new staging skill)
 │   ├── Endpoint: showin-stg-handler
 │   ├── Skill ID: amzn1.ask.skill.xxx-stg
 │   ├── 🧪 UAT/stakeholder testing
 │   └── Command: "アレクサ、ボイスメモ検証版を開いて"
 
 Future (Phase 3 - Production):
-└── "松蔭（showIN）" (public production skill)
+└── "共有手帳（shareNOTE）" (public production skill)
     ├── Endpoint: showin-prod-handler
     ├── Skill ID: amzn1.ask.skill.xxx-prod
     ├── 🌍 Alexa Skills Store public release
@@ -71,6 +75,7 @@ Future (Phase 3 - Production):
 ```
 
 **Single Device Testing Strategy:**
+
 - One Echo device can test multiple skills
 - Different invocation names distinguish environments
 - Dev/staging skills remain private (testing only)
@@ -79,6 +84,7 @@ Future (Phase 3 - Production):
 ## 🚀 CI/CD Pipeline Status
 
 ### Current Setup
+
 ```yaml
 Branches → Environments:
 ├── develop branch → showin-dev (✅ Active)
@@ -87,12 +93,14 @@ Branches → Environments:
 ```
 
 ### GitHub Actions Workflow
+
 - ✅ **Automated Testing**: All pushes trigger tests
 - ✅ **Development Deployment**: `develop` branch → auto deploy to dev
 - ⏸️ **Staging Deployment**: Ready but not needed yet
 - ⏸️ **Production Deployment**: Ready but not needed yet
 
 ### Google OAuth Setup
+
 ```
 Google Cloud Console:
 1. APIs & Services > Credentials
@@ -109,6 +117,7 @@ Google Cloud Console:
 ## 📊 When to Scale Environments
 
 ### Triggers for Adding Staging Environment
+
 - [ ] Multiple developers working simultaneously
 - [ ] Complex features requiring pre-production testing
 - [ ] Need for user acceptance testing (UAT)
@@ -116,6 +125,7 @@ Google Cloud Console:
 - [ ] Business stakeholder review requirements
 
 ### Triggers for Adding Production Environment
+
 - [ ] Public release to Alexa Skills Store
 - [ ] SLA requirements (uptime guarantees)
 - [ ] Compliance requirements (data separation)
@@ -125,6 +135,7 @@ Google Cloud Console:
 ## 🛠️ Environment Expansion Checklist
 
 ### Adding Staging Environment
+
 ```bash
 # 1. Configuration
 - [ ] Create .env.stg file
@@ -153,6 +164,7 @@ Google Cloud Console:
 ```
 
 ### Adding Production Environment
+
 ```bash
 # 1. Security Review
 - [ ] Conduct security audit
@@ -187,6 +199,7 @@ Google Cloud Console:
 ## 💡 Cost Management
 
 ### Current Costs (Dev Only)
+
 ```
 DynamoDB On-Demand: ~$0.01/month
 Lambda Requests: ~$0.01/month
@@ -195,6 +208,7 @@ Total: ~$0.03/month
 ```
 
 ### Projected Costs (All Environments)
+
 ```
 Dev Environment: ~$0.03/month
 Staging Environment: ~$0.05/month
@@ -205,12 +219,14 @@ Total: ~$0.28/month
 ## 🔐 Security Considerations
 
 ### Current Security (Dev)
+
 - ✅ IAM least privilege access
 - ✅ DynamoDB encryption at rest
 - ✅ VPC isolation not required (serverless)
 - ✅ HTTPS/TLS for all communications
 
 ### Additional Security (Staging/Prod)
+
 - [ ] Separate AWS accounts for isolation
 - [ ] Enhanced monitoring and alerting
 - [ ] Automated security scanning
@@ -220,6 +236,7 @@ Total: ~$0.28/month
 ## 📚 Documentation Updates Required
 
 ### When Adding Environments
+
 - [ ] Update deployment-guide.md
 - [ ] Update architecture.md diagrams
 - [ ] Update testing-guide.md procedures
@@ -227,6 +244,7 @@ Total: ~$0.28/month
 - [ ] Update README.md status
 
 ### When Going to Production
+
 - [ ] Create operations runbook
 - [ ] Document incident response procedures
 - [ ] Create monitoring playbooks
@@ -236,18 +254,21 @@ Total: ~$0.28/month
 ## 🎯 Success Metrics
 
 ### Development Phase (Current)
+
 - [x] Rapid iteration cycles
 - [x] Low operational overhead
 - [x] Cost under $1/month
 - [x] Single developer productivity
 
 ### Staging Phase (Future)
+
 - [ ] Multi-developer collaboration
 - [ ] Pre-production validation
 - [ ] UAT process efficiency
 - [ ] Deployment confidence
 
 ### Production Phase (Future)
+
 - [ ] 99.9% uptime SLA
 - [ ] < 2s response times
 - [ ] User satisfaction > 4.5/5
@@ -256,6 +277,7 @@ Total: ~$0.28/month
 ## 🚨 Emergency Procedures
 
 ### Environment Rollback
+
 ```bash
 # Quick rollback to previous version
 git checkout v1.0.0
@@ -267,6 +289,7 @@ cdk destroy showin-dev --force
 ```
 
 ### Data Recovery
+
 ```bash
 # DynamoDB point-in-time recovery
 aws dynamodb restore-table-to-point-in-time \
@@ -280,16 +303,19 @@ aws dynamodb restore-table-to-point-in-time \
 ## 📋 Next Steps (Priority Order)
 
 1. **Immediate** (This week):
+
    - [ ] Configure GitHub Actions secrets
    - [ ] Test develop branch auto-deployment
    - [ ] Document any deployment issues
 
 2. **Short Term** (This month):
+
    - [ ] Add monitoring to dev environment
    - [ ] Implement basic health checks
    - [ ] Optimize Lambda cold starts
 
 3. **Medium Term** (When needed):
+
    - [ ] Evaluate staging environment need
    - [ ] Plan production environment strategy
    - [ ] Consider multi-region deployment

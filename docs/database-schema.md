@@ -2,38 +2,42 @@
 
 ## Overview
 
-松蔭（showIN） は3つの DynamoDB テーブルを使用してデータを管理しています。
+共有手帳（shareNOTE） は 3 つの DynamoDB テーブルを使用してデータを管理しています。
 すべてのテーブルはオンデマンド課金モードで、自動スケーリングされます。
 
 ## Tables
 
 ### 1. Memos Table
+
 メモデータを保存するメインテーブル
 
 **Table Name**: `showin-${environment}-memos`
 
 **Primary Key**:
-- Partition Key: `userId` (String) - ユーザーID（Google ID または Alexa ID）
-- Sort Key: `id` (String) - メモID（タイムスタンプ + ハッシュ）
+
+- Partition Key: `userId` (String) - ユーザー ID（Google ID または Alexa ID）
+- Sort Key: `id` (String) - メモ ID（タイムスタンプ + ハッシュ）
 
 **Attributes**:
 | Attribute | Type | Required | Description |
 |-----------|------|----------|-------------|
-| userId | String | Yes | ユーザーID |
+| userId | String | Yes | ユーザー ID |
 | id | String | Yes | メモの一意識別子 |
-| familyId | String | Yes | 家族グループID（UUID） |
+| familyId | String | Yes | 家族グループ ID（UUID） |
 | content | String | Yes | メモの内容 |
-| timestamp | String | Yes | 作成日時（ISO 8601形式） |
+| timestamp | String | Yes | 作成日時（ISO 8601 形式） |
 | deleted | Boolean | No | 論理削除フラグ（デフォルト: false） |
 | createdByName | String | No | 作成者の表示名 |
 
 **Global Secondary Index (GSI)**:
+
 - Name: `family-timestamp-index`
 - Partition Key: `familyId` (String)
 - Sort Key: `timestamp` (String)
 - 用途: 家族単位でメモを時系列で取得
 
 **サンプルデータ**:
+
 ```json
 {
   "userId": "123456789012345678901",
@@ -47,27 +51,30 @@
 ```
 
 ### 2. Users Table
+
 ユーザー情報と家族関係を管理
 
 **Table Name**: `showin-${environment}-users`
 
 **Primary Key**:
-- Partition Key: `userId` (String) - ユーザーID
+
+- Partition Key: `userId` (String) - ユーザー ID
 
 **Attributes**:
 | Attribute | Type | Required | Description |
 |-----------|------|----------|-------------|
-| userId | String | Yes | ユーザーID |
-| familyId | String | Yes | 所属する家族ID |
+| userId | String | Yes | ユーザー ID |
+| familyId | String | Yes | 所属する家族 ID |
 | userName | String | Yes | 表示名 |
-| email | String | No | メールアドレス（Googleユーザーのみ） |
-| picture | String | No | プロフィール画像URL |
+| email | String | No | メールアドレス（Google ユーザーのみ） |
+| picture | String | No | プロフィール画像 URL |
 | isOwner | Boolean | Yes | 家族の当主フラグ |
 | createdAt | String | Yes | アカウント作成日時 |
 | updatedAt | String | Yes | 最終更新日時 |
 | source | String | Yes | アカウントソース（"google" or "alexa"） |
 
 **サンプルデータ**:
+
 ```json
 {
   "userId": "123456789012345678901",
@@ -83,28 +90,32 @@
 ```
 
 ### 3. InviteCodes Table
-家族招待コードを管理（5分間有効）
+
+家族招待コードを管理（5 分間有効）
 
 **Table Name**: `showin-${environment}-invite-codes`
 
 **Primary Key**:
-- Partition Key: `code` (String) - 4桁の招待コード
+
+- Partition Key: `code` (String) - 4 桁の招待コード
 
 **Attributes**:
 | Attribute | Type | Required | Description |
 |-----------|------|----------|-------------|
-| code | String | Yes | 4桁の数字コード |
-| familyId | String | Yes | 招待先の家族ID |
-| createdBy | String | Yes | 作成者のユーザーID |
+| code | String | Yes | 4 桁の数字コード |
+| familyId | String | Yes | 招待先の家族 ID |
+| createdBy | String | Yes | 作成者のユーザー ID |
 | createdAt | String | Yes | 作成日時 |
-| expiresAt | String | Yes | 有効期限（作成から5分後） |
+| expiresAt | String | Yes | 有効期限（作成から 5 分後） |
 | used | Boolean | No | 使用済みフラグ |
 
 **TTL (Time To Live)**:
+
 - `expiresAt` フィールドを使用して自動削除
 - 期限切れコードは DynamoDB が自動的に削除
 
 **サンプルデータ**:
+
 ```json
 {
   "code": "1234",
@@ -119,6 +130,7 @@
 ## データアクセスパターン
 
 ### 1. メモの取得
+
 ```
 Query on family-timestamp-index
 WHERE familyId = :familyId
@@ -126,12 +138,14 @@ ORDER BY timestamp DESC
 ```
 
 ### 2. ユーザーの家族メンバー取得
+
 ```
 1. Get user from Users table
 2. Query Users table WHERE familyId = user.familyId
 ```
 
 ### 3. 招待コードの検証
+
 ```
 Get from InviteCodes table WHERE code = :code
 Check if not expired and not used
@@ -140,22 +154,26 @@ Check if not expired and not used
 ## インデックス戦略
 
 ### Primary Key 設計
+
 - **Memos**: userId + id の複合キーで、ユーザーごとのメモを効率的に管理
 - **Users**: userId 単一キーで、高速なユーザー検索
 - **InviteCodes**: code 単一キーで、O(1) の検証
 
 ### GSI 設計
+
 - **family-timestamp-index**: 家族単位でのメモ取得を最適化
 - Sort Key に timestamp を使用して時系列ソート
 
 ## スケーリング考慮事項
 
 ### 現在の設計制限
-- 1家族あたりの最大メンバー数: 制限なし（推奨: 10人以下）
-- 1家族あたりの最大メモ数: 制限なし（実用上: 10,000件）
-- 招待コード: 4桁数字（同時有効数: 最大10,000）
+
+- 1 家族あたりの最大メンバー数: 制限なし（推奨: 10 人以下）
+- 1 家族あたりの最大メモ数: 制限なし（実用上: 10,000 件）
+- 招待コード: 4 桁数字（同時有効数: 最大 10,000）
 
 ### 将来の拡張性
+
 1. **Sharding**: familyId によるシャーディングが可能
 2. **Archive**: 古いメモの別テーブルへのアーカイブ
 3. **Cache**: 頻繁にアクセスされるデータの Redis キャッシュ
@@ -163,36 +181,43 @@ Check if not expired and not used
 ## セキュリティ
 
 ### 暗号化
+
 - すべてのテーブルで保存時暗号化（Encryption at Rest）有効
 - AWS KMS によるキー管理
 
 ### アクセス制御
+
 - Lambda 関数のみがアクセス可能
 - IAM ロールによる最小権限の原則
 
 ### データ保護
-- ポイントインタイムリカバリ有効（7日間）
+
+- ポイントインタイムリカバリ有効（7 日間）
 - 論理削除による誤削除防止
 
 ## コスト最適化
 
 ### オンデマンドモード
+
 - トラフィックに応じた自動スケーリング
 - 使用した分だけの課金
 - 開発環境では月額 $0.01 未満
 
 ### TTL による自動削除
+
 - 期限切れ招待コードの自動削除
 - ストレージコストの削減
 
 ## マイグレーション
 
 ### スキーマ変更時の考慮事項
+
 1. **後方互換性**: 新しい属性は optional として追加
 2. **段階的移行**: 読み取り時にデフォルト値を設定
 3. **バージョニング**: スキーマバージョンを属性として管理（将来）
 
 ### バックアップとリストア
+
 ```bash
 # バックアップ
 aws dynamodb create-backup \

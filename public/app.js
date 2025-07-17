@@ -50,10 +50,13 @@ const cancelJoinBtn = document.getElementById("cancel-join-btn");
 const membersModal = document.getElementById("members-modal");
 const membersList = document.getElementById("members-list");
 const closeMembersBtn = document.getElementById("close-members-btn");
-const changeNameBtn = document.getElementById("change-name-btn");
 const logoutBtn = document.getElementById("logout-btn");
-const exportCsvBtn = document.getElementById("export-csv-btn");
-const importCsvBtn = document.getElementById("import-csv-btn");
+const settingsBtn = document.getElementById("settings-btn");
+const settingsModal = document.getElementById("settings-modal");
+const closeSettingsBtn = document.getElementById("close-settings-btn");
+const changeNameModalBtn = document.getElementById("change-name-modal-btn");
+const exportCsvModalBtn = document.getElementById("export-csv-modal-btn");
+const importCsvModalBtn = document.getElementById("import-csv-modal-btn");
 
 // 音声認識オブジェクト
 let recognition = null;
@@ -556,9 +559,9 @@ function setupEventListeners() {
     permanentDeleteAllMemos();
   });
 
-  changeNameBtn.addEventListener("click", () => {
+  settingsBtn.addEventListener("click", () => {
     closeMenu();
-    changeUserName();
+    showSettings();
   });
 
   helpBtn.addEventListener("click", () => {
@@ -569,16 +572,6 @@ function setupEventListeners() {
   logoutBtn.addEventListener("click", () => {
     closeMenu();
     logout();
-  });
-
-  exportCsvBtn.addEventListener("click", () => {
-    closeMenu();
-    exportToCSV();
-  });
-
-  importCsvBtn.addEventListener("click", () => {
-    closeMenu();
-    importFromCSV();
   });
 
   // ヘルプモーダル閉じる
@@ -658,6 +651,32 @@ function setupEventListeners() {
       membersModal.style.display = "none";
     }
   });
+
+  // 設定モーダルのイベントリスナー
+  closeSettingsBtn.addEventListener("click", () => {
+    hideSettings();
+  });
+
+  settingsModal.addEventListener("click", (e) => {
+    if (e.target === settingsModal) {
+      hideSettings();
+    }
+  });
+
+  changeNameModalBtn.addEventListener("click", () => {
+    hideSettings();
+    changeUserName();
+  });
+
+  exportCsvModalBtn.addEventListener("click", () => {
+    hideSettings();
+    exportToCSV();
+  });
+
+  importCsvModalBtn.addEventListener("click", () => {
+    hideSettings();
+    importFromCSV();
+  });
 }
 
 // メニュー開く
@@ -687,6 +706,16 @@ async function showHelp() {
 // ヘルプ非表示
 function hideHelp() {
   helpModal.classList.remove("active");
+}
+
+// 設定表示
+function showSettings() {
+  settingsModal.classList.add("active");
+}
+
+// 設定非表示
+function hideSettings() {
+  settingsModal.classList.remove("active");
 }
 
 // プルリフレッシュ設定
@@ -1756,7 +1785,7 @@ function exportToCSV() {
   const url = URL.createObjectURL(blob);
   const link = document.createElement("a");
   const now = new Date();
-  const fileName = `showin_memos_${now.getFullYear()}${(now.getMonth() + 1).toString().padStart(2, "0")}${now.getDate().toString().padStart(2, "0")}.csv`;
+  const fileName = `sharenote_memos_${now.getFullYear()}${(now.getMonth() + 1).toString().padStart(2, "0")}${now.getDate().toString().padStart(2, "0")}.csv`;
   
   link.href = url;
   link.download = fileName;

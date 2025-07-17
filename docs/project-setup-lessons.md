@@ -1,16 +1,17 @@
 # Project Setup Lessons Learned
 
-*Created from real project experience - 2025-07-12*
+_Created from real project experience - 2025-07-12_
 
 ## 🎯 Purpose
 
-This document captures lessons learned during the 松蔭（showIN） project setup to help future projects avoid common pitfalls and establish better practices.
+This document captures lessons learned during the 共有手帳（shareNOTE） project setup to help future projects avoid common pitfalls and establish better practices.
 
 ## 📚 What We Learned
 
 ### 1. **CDK Project Initialization Order Matters**
 
 #### ❌ What We Did (Problematic)
+
 ```bash
 # Started with existing documentation
 showin/
@@ -24,6 +25,7 @@ showin/
 ```
 
 #### ✅ Correct Approach
+
 ```bash
 # 1. Start with empty directory
 mkdir showin
@@ -52,12 +54,14 @@ git commit -m "Add project documentation"
 ### 2. **File Backup and Recovery Complexity**
 
 #### ❌ Problems Encountered
+
 - File backup/restore operations became complex
 - Multiple rounds of copying and moving files
 - Risk of losing content during moves
 - Git conflicts during rebase operations
 
 #### ✅ Better Approach
+
 - Plan directory structure from the beginning
 - Use CDK's standard structure as the foundation
 - Add custom files incrementally
@@ -65,6 +69,7 @@ git commit -m "Add project documentation"
 ### 3. **Git Repository Management**
 
 #### ❌ Issues We Faced
+
 ```bash
 # Created commits that needed to be reset
 git reset --soft HEAD~1
@@ -79,6 +84,7 @@ showin/
 ```
 
 #### ✅ Clean Git Workflow
+
 ```bash
 # Single, clean commit history
 git log --oneline
@@ -89,6 +95,7 @@ def5678 Initial CDK project setup
 ## 🛠️ Recommended Project Setup Flow
 
 ### Phase 1: Foundation Setup
+
 ```bash
 # 1. Create project directory
 mkdir your-cdk-project
@@ -103,6 +110,7 @@ ls -la
 ```
 
 ### Phase 2: Version Control
+
 ```bash
 # 4. Initialize Git
 git init
@@ -120,6 +128,7 @@ git push -u origin main
 ```
 
 ### Phase 3: Documentation & Customization
+
 ```bash
 # 8. Add project-specific files
 mkdir docs
@@ -136,6 +145,7 @@ git push
 ```
 
 ### Phase 4: Development Setup
+
 ```bash
 # 11. Install dependencies (if not done by cdk init)
 npm install
@@ -152,6 +162,7 @@ cdk synth
 ## ⚠️ Common Pitfalls to Avoid
 
 ### 1. **Directory Not Empty Error**
+
 ```bash
 # ❌ This will fail
 mkdir project
@@ -166,6 +177,7 @@ cdk init app --language typescript  # Success!
 ```
 
 ### 2. **Node Modules in Git**
+
 ```bash
 # ❌ Don't commit node_modules
 git add .  # Includes node_modules/
@@ -178,6 +190,7 @@ cdk.out/
 ```
 
 ### 3. **Package Name Conflicts**
+
 ```bash
 # ❌ Generic names
 "name": "cdk-project"
@@ -187,6 +200,7 @@ cdk.out/
 ```
 
 ### 4. **Missing Environment Variables**
+
 ```bash
 # ❌ Deploy without proper setup
 cdk deploy  # May fail or deploy to wrong account
@@ -201,12 +215,14 @@ cdk deploy
 ## 📊 Time Comparison
 
 ### Our Experience (Suboptimal)
+
 - Initial setup attempt: 30 minutes
 - File backup/recovery: 45 minutes
 - Git cleanup and restructuring: 30 minutes
 - **Total: ~1 hour 45 minutes**
 
 ### Recommended Approach
+
 - CDK initialization: 5 minutes
 - Git setup: 5 minutes
 - Documentation addition: 15 minutes
@@ -272,4 +288,4 @@ Every mistake is a learning opportunity. The confusion we experienced during set
 
 **Remember**: Time spent on proper project setup is an investment that pays dividends throughout the development lifecycle.
 
-*This document should be updated as we gain more experience with CDK project setups.*
+_This document should be updated as we gain more experience with CDK project setups._

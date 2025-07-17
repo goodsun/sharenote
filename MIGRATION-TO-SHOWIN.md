@@ -1,17 +1,19 @@
-# 松蔭（showIN）リポジトリへの移行ガイド
+# 共有手帳（shareNOTE）リポジトリへの移行ガイド
 
 ## 新規リポジトリ作成手順
 
-### 1. GitHubで新規リポジトリ作成
+### 1. GitHub で新規リポジトリ作成
+
 ```bash
 # GitHubで「showin」リポジトリを作成
 # - Repository name: showin
-# - Description: 松蔭（showIN） - 声でつなぐ、家族の知恵
+# - Description: 共有手帳（shareNOTE） - 声でつなぐ、家族の知恵
 # - Private/Public: お好みで
 # - Initialize with READMEはチェックしない
 ```
 
 ### 2. ローカルでの作業
+
 ```bash
 # 新しいディレクトリを作成
 cd ~/develop
@@ -32,7 +34,7 @@ rsync -av --exclude='.git' \
 # 新規Gitリポジトリとして初期化
 git init
 git add .
-git commit -m "Initial commit: 松蔭（showIN） - Forked from showin"
+git commit -m "Initial commit: 共有手帳（shareNOTE） - Forked from showin"
 
 # GitHubリモートを追加
 git remote add origin https://github.com/YOUR_USERNAME/showin.git
@@ -41,14 +43,16 @@ git push -u origin main
 ```
 
 ### 3. 環境ファイルの再作成
+
 ```bash
 # 環境変数ファイルをコピー（機密情報なので手動で）
 cp ~/develop/claude/showin/.env.dev .env.dev
 cp ~/develop/claude/showin/.env.prod .env.prod
 ```
 
-### 4. GitHub Actions Secretsの設定
-GitHubリポジトリの Settings > Secrets and variables > Actions で以下を設定：
+### 4. GitHub Actions Secrets の設定
+
+GitHub リポジトリの Settings > Secrets and variables > Actions で以下を設定：
 
 - `AWS_ACCESS_KEY_ID`
 - `AWS_SECRET_ACCESS_KEY`
@@ -57,6 +61,7 @@ GitHubリポジトリの Settings > Secrets and variables > Actions で以下を
 - `GOOGLE_CLIENT_ID_PROD`
 
 ### 5. 依存関係のインストールとビルド
+
 ```bash
 # 依存関係をクリーンインストール
 npm install
@@ -68,6 +73,7 @@ npm run build:frontend:dev
 ```
 
 ### 6. 最終確認
+
 ```bash
 # showinの文字列が残っていないか確認
 grep -r "showin" . --exclude-dir=node_modules --exclude-dir=.git
@@ -79,6 +85,7 @@ grep -r "AlexaVoiceMemo" . --exclude-dir=node_modules --exclude-dir=.git
 ## デプロイ
 
 ### 開発環境
+
 ```bash
 # CDKデプロイ
 export CDK_ENV=dev
@@ -89,6 +96,7 @@ cdk deploy showin-dev
 ```
 
 ### 本番環境
+
 ```bash
 # mainブランチにマージすると自動デプロイ
 git checkout -b release/v1.0.0
@@ -99,38 +107,42 @@ git push origin release/v1.0.0
 ## 移行後の確認事項
 
 - [ ] 新リポジトリでビルドが成功する
-- [ ] GitHub Actionsが正常に動作する
+- [ ] GitHub Actions が正常に動作する
 - [ ] 開発環境へのデプロイが成功する
-- [ ] Alexaスキルのエンドポイントを新しいLambda ARNに更新
+- [ ] Alexa スキルのエンドポイントを新しい Lambda ARN に更新
 - [ ] フロントエンドが正常に動作する
 - [ ] 家族機能が正常に動作する
 
 ## 古いリポジトリの扱い
 
 1. **アーカイブ化を推奨**
+
    - Settings > General > Danger Zone
    - "Archive this repository"をクリック
 
-2. **README更新**（アーカイブ前に）
+2. **README 更新**（アーカイブ前に）
+
    ```markdown
    # ⚠️ This repository has been moved to [showin](https://github.com/YOUR_USERNAME/showin)
-   
+
    This is the old version of the project. Please use the new repository.
    ```
 
 ## トラブルシューティング
 
-### package-lock.jsonの警告が出る場合
+### package-lock.json の警告が出る場合
+
 ```bash
 rm package-lock.json
 npm install
 ```
 
-### CDKデプロイでBootstrapエラーが出る場合
+### CDK デプロイで Bootstrap エラーが出る場合
+
 ```bash
 cdk bootstrap aws://${CDK_ACCOUNT}/${CDK_REGION}
 ```
 
 ---
 
-これで完全に新しい「松蔭（showIN）」プロジェクトとしてスタートできます！
+これで完全に新しい「共有手帳（shareNOTE）」プロジェクトとしてスタートできます！

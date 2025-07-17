@@ -40,9 +40,9 @@ header {
 }
 
 header h1 {
-  font-size: 24px;
+  font-size: 20px;
   font-weight: 600;
-  font-family: "游明朝", "Yu Mincho", "Hiragino Mincho Pro", serif;
+  font-family: "Hiragino Sans", "Yu Gothic", sans-serif;
 }
 
 .header-right {
@@ -587,7 +587,7 @@ header h1 {
   }
 
   header h1 {
-    font-size: 20px;
+    font-size: 15px;
   }
 
   .memo-list {
@@ -1095,4 +1095,56 @@ header h1 {
 #googleSignInButton {
   display: flex;
   justify-content: center;
+}
+
+/* 設定モーダル */
+.settings-section {
+  margin-bottom: 30px;
+}
+
+.settings-section h3 {
+  font-size: 14px;
+  color: #6b7280;
+  margin-bottom: 12px;
+  font-weight: 500;
+}
+
+.settings-btn {
+  width: 100%;
+  padding: 16px;
+  background: #f9fafb;
+  border: 1px solid #e5e7eb;
+  border-radius: 8px;
+  display: flex;
+  align-items: center;
+  cursor: pointer;
+  margin-bottom: 8px;
+  transition: all 0.2s;
+  font-size: 16px;
+}
+
+.settings-btn:hover {
+  background: #f3f4f6;
+  border-color: #d1d5db;
+}
+
+.settings-btn:active {
+  background: #e5e7eb;
+}
+
+.settings-btn-icon {
+  font-size: 20px;
+  margin-right: 12px;
+}
+
+.settings-btn-text {
+  flex: 1;
+  text-align: left;
+  color: #333;
+}
+
+.settings-btn-arrow {
+  color: #9ca3af;
+  font-size: 20px;
+  font-weight: 300;
 }

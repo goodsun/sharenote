@@ -2,8 +2,8 @@
 
 ## Overview
 
-松蔭（showIN） Web APIは、Google OAuth2.0認証を使用したRESTful APIです。
-すべてのエンドポイントは認証が必要で、JWTトークンをBearerトークンとして使用します。
+共有手帳（shareNOTE） Web API は、Google OAuth2.0 認証を使用した RESTful API です。
+すべてのエンドポイントは認証が必要で、JWT トークンを Bearer トークンとして使用します。
 
 ## Base URL
 
@@ -13,7 +13,7 @@ https://99nb4tfwu6.execute-api.ap-northeast-1.amazonaws.com/dev
 
 ## Authentication
 
-すべてのAPIリクエストには、HTTPヘッダーに認証トークンが必要です：
+すべての API リクエストには、HTTP ヘッダーに認証トークンが必要です：
 
 ```http
 Authorization: Bearer <google-jwt-token>
@@ -22,22 +22,25 @@ Authorization: Bearer <google-jwt-token>
 ### エラーレスポンス
 
 認証エラーの場合：
+
 ```json
 {
   "error": "認証が必要です"
 }
 ```
 
-JWTの有効期限切れの場合、自動的にログアウト処理が実行されます。
+JWT の有効期限切れの場合、自動的にログアウト処理が実行されます。
 
 ## Endpoints
 
 ### Memo Management
 
 #### GET /api/memos
+
 家族全員のメモ一覧を取得します（削除済みメモを含む）。
 
 **Response:**
+
 ```json
 [
   {
@@ -53,9 +56,11 @@ JWTの有効期限切れの場合、自動的にログアウト処理が実行�
 ```
 
 #### POST /api/memos
+
 新しいメモを作成します。
 
 **Request Body:**
+
 ```json
 {
   "content": "メモの内容"
@@ -63,6 +68,7 @@ JWTの有効期限切れの場合、自動的にログアウト処理が実行�
 ```
 
 **Response:**
+
 ```json
 {
   "id": "1234567890abcd",
@@ -71,9 +77,11 @@ JWTの有効期限切れの場合、自動的にログアウト処理が実行�
 ```
 
 #### PUT /api/memos/:id
+
 メモを更新します。
 
 **Request Body:**
+
 ```json
 {
   "content": "更新後のメモ内容"
@@ -81,6 +89,7 @@ JWTの有効期限切れの場合、自動的にログアウト処理が実行�
 ```
 
 **Response:**
+
 ```json
 {
   "message": "メモを更新しました"
@@ -88,12 +97,14 @@ JWTの有効期限切れの場合、自動的にログアウト処理が実行�
 ```
 
 #### DELETE /api/memos/:id
+
 メモを削除します（論理削除または物理削除）。
 
 - 通常のメモ: 論理削除（削除フラグを立てる）
 - 既に削除済みのメモ: 物理削除（完全に削除）
 
 **Response:**
+
 ```json
 {
   "message": "メモを削除しました",
@@ -102,9 +113,11 @@ JWTの有効期限切れの場合、自動的にログアウト処理が実行�
 ```
 
 #### PUT /api/memos/:id/restore
+
 削除済みメモを復元します。
 
 **Response:**
+
 ```json
 {
   "message": "メモを復元しました"
@@ -114,9 +127,11 @@ JWTの有効期限切れの場合、自動的にログアウト処理が実行�
 ### Family Management
 
 #### POST /api/family/invite-codes
-家族招待コードを生成します（4桁、5分間有効）。
+
+家族招待コードを生成します（4 桁、5 分間有効）。
 
 **Response:**
+
 ```json
 {
   "code": "1234",
@@ -125,9 +140,11 @@ JWTの有効期限切れの場合、自動的にログアウト処理が実行�
 ```
 
 #### POST /api/family/join
+
 招待コードを使って家族に参加します。
 
 **Request Body:**
+
 ```json
 {
   "inviteCode": "1234"
@@ -135,6 +152,7 @@ JWTの有効期限切れの場合、自動的にログアウト処理が実行�
 ```
 
 **Response:**
+
 ```json
 {
   "message": "家族に参加しました",
@@ -143,9 +161,11 @@ JWTの有効期限切れの場合、自動的にログアウト処理が実行�
 ```
 
 #### POST /api/family/leave
+
 現在の家族から独立します。
 
 **Response:**
+
 ```json
 {
   "message": "家族から独立しました",
@@ -154,9 +174,11 @@ JWTの有効期限切れの場合、自動的にログアウト処理が実行�
 ```
 
 #### POST /api/family/transfer-owner
+
 家督を他のメンバーに譲ります（当主のみ実行可能）。
 
 **Request Body:**
+
 ```json
 {
   "newOwnerUserId": "google-user-id"
@@ -164,6 +186,7 @@ JWTの有効期限切れの場合、自動的にログアウト処理が実行�
 ```
 
 **Response:**
+
 ```json
 {
   "message": "家督を譲りました"
@@ -171,9 +194,11 @@ JWTの有効期限切れの場合、自動的にログアウト処理が実行�
 ```
 
 #### GET /api/family/members
+
 家族メンバー一覧を取得します。
 
 **Response:**
+
 ```json
 {
   "members": [
@@ -192,9 +217,11 @@ JWTの有効期限切れの場合、自動的にログアウト処理が実行�
 ### User Management
 
 #### PUT /api/user/name
+
 ユーザー名を変更します。
 
 **Request Body:**
+
 ```json
 {
   "name": "新しい名前"
@@ -202,6 +229,7 @@ JWTの有効期限切れの場合、自動的にログアウト処理が実行�
 ```
 
 **Response:**
+
 ```json
 {
   "message": "名前を変更しました",
@@ -211,26 +239,27 @@ JWTの有効期限切れの場合、自動的にログアウト処理が実行�
 
 ## Error Codes
 
-| Status Code | Description |
-|------------|-------------|
-| 200 | 成功 |
-| 400 | リクエストエラー（パラメータ不正など） |
-| 401 | 認証エラー |
-| 403 | 権限エラー（当主のみの操作など） |
-| 404 | リソースが見つからない |
-| 500 | サーバーエラー |
+| Status Code | Description                            |
+| ----------- | -------------------------------------- |
+| 200         | 成功                                   |
+| 400         | リクエストエラー（パラメータ不正など） |
+| 401         | 認証エラー                             |
+| 403         | 権限エラー（当主のみの操作など）       |
+| 404         | リソースが見つからない                 |
+| 500         | サーバーエラー                         |
 
 ## Rate Limiting
 
 現在、レート制限は実装されていませんが、将来的に以下の制限を予定：
-- 1分あたり60リクエスト
-- 1時間あたり1000リクエスト
+
+- 1 分あたり 60 リクエスト
+- 1 時間あたり 1000 リクエスト
 
 ## Webhooks
 
-現在、Webhook機能は実装されていません。
+現在、Webhook 機能は実装されていません。
 
 ## SDKs
 
-現在、公式SDKは提供されていません。
-JavaScriptでの実装例は `public/app.js` を参照してください。
+現在、公式 SDK は提供されていません。
+JavaScript での実装例は `public/app.js` を参照してください。

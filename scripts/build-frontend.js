@@ -53,7 +53,7 @@ if (process.env[`API_URL_${env.toUpperCase()}`]) {
   // CloudFormationから取得を試みる
   try {
     apiUrl = execSync(
-      `aws cloudformation describe-stacks --stack-name showin-${env} --query 'Stacks[0].Outputs[?OutputKey==\`WebApiUrl\`].OutputValue' --output text 2>/dev/null`,
+      `aws cloudformation describe-stacks --stack-name sharenote-${env} --query 'Stacks[0].Outputs[?OutputKey==\`WebApiUrl\`].OutputValue' --output text 2>/dev/null`,
       { encoding: 'utf8' }
     ).trim();
     // 末尾のスラッシュを削除
@@ -88,6 +88,20 @@ fs.writeFileSync(path.join(buildDir, 'app.js'), appJsContent);
 fs.writeFileSync(path.join(buildDir, 'index.html'), indexHtmlContent);
 fs.writeFileSync(path.join(buildDir, 'style.css'), fs.readFileSync('public/style.css', 'utf8'));
 
+// favicon.icoをコピー
+const faviconSrc = path.join('public', 'favicon.ico');
+if (fs.existsSync(faviconSrc)) {
+  fs.copyFileSync(faviconSrc, path.join(buildDir, 'favicon.ico'));
+  console.log('   Copied favicon.ico');
+}
+
+// manifest.jsonをコピー
+const manifestSrc = path.join('public', 'manifest.json');
+if (fs.existsSync(manifestSrc)) {
+  fs.copyFileSync(manifestSrc, path.join(buildDir, 'manifest.json'));
+  console.log('   Copied manifest.json');
+}
+
 // imgディレクトリをコピー
 const imgSrcDir = path.join('public', 'img');
 const imgDestDir = path.join(buildDir, 'img');
@@ -102,6 +116,22 @@ if (fs.existsSync(imgSrcDir)) {
     fs.copyFileSync(path.join(imgSrcDir, file), path.join(imgDestDir, file));
   });
   console.log(`   Copied ${imgFiles.length} image files`);
+}
+
+// iconsディレクトリをコピー
+const iconsSrcDir = path.join('public', 'icons');
+const iconsDestDir = path.join(buildDir, 'icons');
+if (fs.existsSync(iconsSrcDir)) {
+  if (!fs.existsSync(iconsDestDir)) {
+    fs.mkdirSync(iconsDestDir, { recursive: true });
+  }
+  
+  // iconsディレクトリ内のファイルをコピー
+  const iconFiles = fs.readdirSync(iconsSrcDir);
+  iconFiles.forEach(file => {
+    fs.copyFileSync(path.join(iconsSrcDir, file), path.join(iconsDestDir, file));
+  });
+  console.log(`   Copied ${iconFiles.length} icon files`);
 }
 
 console.log(`✅ Frontend built successfully to ${buildDir}/`);

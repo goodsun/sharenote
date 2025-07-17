@@ -1,52 +1,59 @@
-# Alexa Skill クイックセットアップガイド（JSONインポート版）
+# Alexa Skill クイックセットアップガイド（JSON インポート版）
 
-このガイドでは、既存の`interaction-model.json`を使って素早くAlexaスキルをセットアップする方法を説明します。
+このガイドでは、既存の`interaction-model.json`を使って素早く Alexa スキルをセットアップする方法を説明します。
 
 ## 前提条件
-- Lambda関数がデプロイ済み
+
+- Lambda 関数がデプロイ済み
 - Lambda ARN: `arn:aws:lambda:ap-northeast-1:498997347996:function:showin-dev-handler`
 
 ## セットアップ手順
 
-### 1. Alexa Developer Consoleでスキル作成
+### 1. Alexa Developer Console でスキル作成
+
 1. [Alexa Developer Console](https://developer.amazon.com/alexa/console/ask)にアクセス
 2. 「スキルの作成」をクリック
 3. 以下を設定:
-   - **スキル名**: 松蔭（showIN）
+   - **スキル名**: 共有手帳（shareNOTE）
    - **デフォルト言語**: 日本語
    - **モデル**: カスタム
    - **ホスティング方法**: ユーザー定義のプロビジョニング
 
-### 2. JSONファイルでインタラクションモデルをインポート
+### 2. JSON ファイルでインタラクションモデルをインポート
+
 1. 左メニュー「ビルド」タブ
-2. 「対話モデル」→「JSONエディター」
+2. 「対話モデル」→「JSON エディター」
 3. `alexa-skills/interaction-model.json`の内容をコピー＆ペースト
 4. 「モデルを保存」をクリック
-5. 「モデルをビルド」をクリック（1-2分待機）
+5. 「モデルをビルド」をクリック（1-2 分待機）
 
 ### 3. エンドポイント設定
+
 1. 左メニュー「エンドポイント」
 2. 「AWS Lambda ARN」を選択
-3. デフォルトリージョンにLambda ARNを入力:
+3. デフォルトリージョンに Lambda ARN を入力:
    ```
    arn:aws:lambda:ap-northeast-1:498997347996:function:showin-dev-handler
    ```
 4. 「エンドポイントを保存」
 
-### 4. スキルIDとVendor IDの取得
+### 4. スキル ID と Vendor ID の取得
 
-#### 4.1 スキルIDの確認
-- Alexa Developer ConsoleのURLまたはスキル詳細画面でスキルIDを確認
+#### 4.1 スキル ID の確認
+
+- Alexa Developer Console の URL またはスキル詳細画面でスキル ID を確認
 - 形式: `amzn1.ask.skill.xxxxxxxx-xxxx-xxxx-xxxx-xxxxxxxxxxxx`
 
-#### 4.2 Vendor IDの確認（将来のCI/CD用）
+#### 4.2 Vendor ID の確認（将来の CI/CD 用）
+
 - 直接アクセス: https://developer.amazon.com/alexa/console/ask/settings
 - 「Vendor ID」の値を確認（例: M1234567890）
-- ※Alexa Developer Consoleの設定タブからもアクセス可能
+- ※Alexa Developer Console の設定タブからもアクセス可能
 
-#### 4.3 ASK CLIトークンの取得（オプション：CI/CD用）
+#### 4.3 ASK CLI トークンの取得（オプション：CI/CD 用）
 
-**方法1: ASK CLIを使う場合**
+**方法 1: ASK CLI を使う場合**
+
 ```bash
 # ASK CLIをインストール
 npm install -g ask-cli
@@ -59,16 +66,18 @@ cat ~/.ask/cli_config
 # "accessToken": "Atza|..." と "refreshToken": "Atzr|..." をコピー
 ```
 
-**方法2: 既存の認証情報から取得**
+**方法 2: 既存の認証情報から取得**
+
 ```bash
 # アクセストークン
 cat ~/.ask/cli_config | jq -r '.profiles.default.token.access_token'
 
-# リフレッシュトークン  
+# リフレッシュトークン
 cat ~/.ask/cli_config | jq -r '.profiles.default.token.refresh_token'
 ```
 
-#### 4.4 .envファイルに設定
+#### 4.4 .env ファイルに設定
+
 ```bash
 # 必須
 ALEXA_SKILL_ID_DEV=amzn1.ask.skill.xxxxxxxx-xxxx-xxxx-xxxx-xxxxxxxxxxxx
@@ -79,7 +88,8 @@ ALEXA_ACCESS_TOKEN=Atza|xxxx...  # ASK CLIから取得
 ALEXA_REFRESH_TOKEN=Atzr|xxxx... # ASK CLIから取得
 ```
 
-#### 4.5 Lambda関数にAlexaトリガーを追加
+#### 4.5 Lambda 関数に Alexa トリガーを追加
+
 ```bash
 aws lambda add-permission \
   --function-name showin-dev-handler \
@@ -90,16 +100,18 @@ aws lambda add-permission \
 ```
 
 ### 5. テスト
-1. Alexa Developer Consoleの「テスト」タブ
+
+1. Alexa Developer Console の「テスト」タブ
 2. テストを「開発中」に有効化
 3. テキストまたは音声で以下をテスト:
+
    ```
-   アレクサ、松蔭を開いて
-   → "松蔭へようこそ。声でつなぐ、家族の知恵..."
-   
+   アレクサ、共有手帳を開いて
+   → "共有手帳へようこそ。声でつなぐ、家族の知恵..."
+
    買い物リストをメモして
    → "買い物リストをメモに追加しました"
-   
+
    メモを読んで
    → "メモが1件あります..."
    ```
@@ -107,15 +119,18 @@ aws lambda add-permission \
 ## トラブルシューティング
 
 ### エラー: スキルがリクエストに応答しませんでした
-- Lambda関数のトリガー設定を確認
-- CloudWatch Logsでエラーを確認
+
+- Lambda 関数のトリガー設定を確認
+- CloudWatch Logs でエラーを確認
 
 ### エラー: 認証エラー
-- スキルIDが正しく設定されているか確認
-- Lambda関数のトリガーにスキルIDが設定されているか確認
 
-## 補足: interaction-model.jsonの内容
-- **呼び出し名**: 松蔭（しょういん）
+- スキル ID が正しく設定されているか確認
+- Lambda 関数のトリガーにスキル ID が設定されているか確認
+
+## 補足: interaction-model.json の内容
+
+- **呼び出し名**: 共有手帳（しょういん）
 - **インテント**:
   - AddMemoIntent（メモ追加）
   - ReadMemosIntent（メモ読み上げ）
@@ -124,4 +139,4 @@ aws lambda add-permission \
   - HelpIntent（ヘルプ）
   - ビルトインインテント（Help, Cancel, Stop, NavigateHome）
 
-これで5分程度でAlexaスキルのセットアップが完了します！
+これで 5 分程度で Alexa スキルのセットアップが完了します！
