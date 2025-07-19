@@ -1,0 +1,81 @@
+{
+  "manifest": {
+    "publishingInformation": {
+      "locales": {
+        "ja-JP": {
+          "name": "開発手帳",
+          "summary": "【開発版】声でつなぐ、家族の知恵。日々の気づきを音声で記録し、家族で共有。",
+          "description": "【これは開発版です】\n\n共有手帳（shareNOTE）は、家族みんなで共有する新しい形の手帳です。日本の口伝文化と家族の知恵袋の伝統を、現代のテクノロジーで再解釈しました。\n\n音声という最も人間的なインターフェースを通じて、家族の知恵と想いを記録し、世代を超えて継承していきます。\n\n主な機能：\n• 知恵の記録：日々の気づきや学びを音声で簡単に記録\n• 家族で共有：家族みんなで知恵を共有し、世代を超えて継承\n• 簡単管理：追加、確認、削除が音声で簡単に\n\n使い方の例：\n「アレクサ、開発手帳を開いて」\n「今日の気づきを記録」\n「家族の知恵を読んで」\n「1番目を削除」\n\n一人ひとりの気づきが、みんなの知恵になる。",
+          "examplePhrases": [
+            "アレクサ、開発手帳を開いて",
+            "アレクサ、開発手帳で今日の気づきを記録",
+            "アレクサ、開発手帳で家族の知恵を読んで"
+          ],
+          "keywords": [
+            "開発版",
+            "テスト",
+            "メモ",
+            "共有手帳",
+            "音声メモ",
+            "リマインダー",
+            "買い物リスト",
+            "ToDo",
+            "タスク管理",
+            "メモ帳"
+          ],
+          "smallIconUri": "https://s3.amazonaws.com/CAPS-SSE/echo_developer/1234/5678901234567890123456789012345678901234567890123456789012345678/APP_ICON_108.png",
+          "largeIconUri": "https://s3.amazonaws.com/CAPS-SSE/echo_developer/1234/5678901234567890123456789012345678901234567890123456789012345678/APP_ICON_512.png",
+          "updatesDescription": "開発版の初回リリース"
+        }
+      },
+      "isAvailableWorldwide": false,
+      "distributionCountries": ["JP"],
+      "testingInstructions": "【開発版のテスト手順】\n\nこのスキルは音声でメモを管理するシンプルなアプリケーションの開発版です。\n\nテスト手順：\n1. 「アレクサ、開発手帳を開いて」でスキルを起動\n2. 「牛乳を買うをメモして」でメモを追加\n3. 「メモを読んで」で保存されたメモを確認\n4. 「1番目のメモを削除」でメモを削除\n\n各機能が正しく動作することを確認してください。\n\n注意：これは開発版のため、予期しない動作をする可能性があります。",
+      "category": "PRODUCTIVITY",
+      "distributionMode": "PUBLIC",
+      "automaticDistribution": {
+        "isActive": false
+      }
+    },
+    "apis": {
+      "custom": {
+        "endpoint": {
+          "uri": "arn:aws:lambda:ap-northeast-1:498997347996:function:sharenote-dev-handler"
+        },
+        "interfaces": [],
+        "regions": {
+          "NA": {
+            "endpoint": {
+              "uri": "arn:aws:lambda:ap-northeast-1:498997347996:function:sharenote-dev-handler"
+            }
+          },
+          "EU": {
+            "endpoint": {
+              "uri": "arn:aws:lambda:ap-northeast-1:498997347996:function:sharenote-dev-handler"
+            }
+          },
+          "FE": {
+            "endpoint": {
+              "uri": "arn:aws:lambda:ap-northeast-1:498997347996:function:sharenote-dev-handler"
+            }
+          }
+        }
+      }
+    },
+    "manifestVersion": "1.0",
+    "privacyAndCompliance": {
+      "allowsPurchases": false,
+      "usesPersonalInfo": false,
+      "isChildDirected": false,
+      "isExportCompliant": true,
+      "containsAds": false,
+      "locales": {
+        "ja-JP": {
+          "privacyPolicyUrl": "https://flow-theory-x.github.io/sharenote/privacy-policy",
+          "termsOfUseUrl": "https://flow-theory-x.github.io/sharenote/terms-of-use"
+        }
+      }
+    },
+    "permissions": []
+  }
+}

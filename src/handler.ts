@@ -12,7 +12,7 @@ export const handler = async (event: AlexaRequest): Promise<AlexaResponse> => {
 
     switch (requestType) {
       case "LaunchRequest":
-        return buildResponse("共有手帳へようこそ。", false);
+        return await handleLaunchRequest(userId);
 
       case "IntentRequest":
         return await handleIntent(event, userId);
@@ -245,6 +245,30 @@ async function handleJoinFamily(
   } catch (error) {
     console.error("Join family error:", error);
     return buildResponse("家族への参加に失敗しました。", false);
+  }
+}
+
+async function handleLaunchRequest(userId: string): Promise<AlexaResponse> {
+  try {
+    const memos = await memoService.getActiveMemos(userId);
+    const memoCount = memos.length;
+    
+    let welcomeMessage = "共有手帳へようこそ。";
+    
+    if (memoCount === 0) {
+      // 初回利用者向けの詳しい説明
+      welcomeMessage += "初めてのご利用ですね。共有手帳では、メモの追加、読み上げ、削除ができます。例えば「牛乳を追加」と言ってみてください。";
+    } else if (memoCount === 1) {
+      welcomeMessage += `現在1件のメモがあります。`;
+    } else {
+      welcomeMessage += `現在${memoCount}件のメモがあります。`;
+    }
+    
+    return buildResponse(welcomeMessage, false);
+  } catch (error) {
+    console.error("Launch request error:", error);
+    // エラー時はシンプルなウェルカムメッセージを返す
+    return buildResponse("共有手帳へようこそ。", false);
   }
 }
 

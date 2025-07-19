@@ -57,9 +57,16 @@ const closeSettingsBtn = document.getElementById("close-settings-btn");
 const changeNameModalBtn = document.getElementById("change-name-modal-btn");
 const exportCsvModalBtn = document.getElementById("export-csv-modal-btn");
 const importCsvModalBtn = document.getElementById("import-csv-modal-btn");
+const editModal = document.getElementById("edit-modal");
+const editInput = document.getElementById("edit-input");
+const cancelEditBtn = document.getElementById("cancel-edit-btn");
+const saveEditBtn = document.getElementById("save-edit-btn");
 
 // 音声認識オブジェクト
 let recognition = null;
+
+// 編集中のメモID
+let editingMemoId = null;
 
 // 全文表示ダイアログ要素
 let fullTextDialog = null;
@@ -642,6 +649,29 @@ function setupEventListeners() {
     }
   });
 
+  // 編集モーダルのイベントリスナー
+  cancelEditBtn.addEventListener("click", () => {
+    closeEditModal();
+  });
+
+  saveEditBtn.addEventListener("click", () => {
+    saveEdit();
+  });
+
+  editModal.addEventListener("click", (e) => {
+    if (e.target === editModal) {
+      closeEditModal();
+    }
+  });
+
+  editInput.addEventListener("keydown", (e) => {
+    // Cmd/Ctrl + Enter で保存
+    if ((e.metaKey || e.ctrlKey) && e.key === "Enter") {
+      e.preventDefault();
+      saveEdit();
+    }
+  });
+
   closeMembersBtn.addEventListener("click", () => {
     membersModal.style.display = "none";
   });
@@ -1079,11 +1109,33 @@ async function editMemo(memoId) {
   const memo = memos.find((m) => m.id === memoId);
   if (!memo) return;
 
-  const newContent = prompt("メモを編集:", memo.content);
-  if (newContent === null || newContent === memo.content) return;
+  // 編集モーダルを表示
+  editingMemoId = memoId;
+  editInput.value = memo.content;
+  editModal.style.display = "flex";
+  
+  // iOS PWAでのフォーカス問題を回避するため、少し遅延させる
+  setTimeout(() => {
+    editInput.focus();
+    // テキストの最後にカーソルを移動
+    editInput.setSelectionRange(editInput.value.length, editInput.value.length);
+  }, 100);
+}
+
+// 編集を保存
+async function saveEdit() {
+  if (!editingMemoId) return;
+  
+  const newContent = editInput.value.trim();
+  const memo = memos.find((m) => m.id === editingMemoId);
+  
+  if (!newContent || newContent === memo.content) {
+    closeEditModal();
+    return;
+  }
 
   try {
-    const response = await fetch(`${API_BASE_URL}/api/memos/${memoId}`, {
+    const response = await fetch(`${API_BASE_URL}/api/memos/${editingMemoId}`, {
       method: "PUT",
       headers: {
         "Content-Type": "application/json",
@@ -1107,14 +1159,23 @@ async function editMemo(memoId) {
     }
 
     // 成功したら更新
+    const memo = memos.find((m) => m.id === editingMemoId);
     memo.content = newContent;
     memo.updatedAt = new Date().toISOString();
     memo.updatedBy = currentUserId;
     renderMemos();
+    closeEditModal();
   } catch (err) {
     console.error("Error updating memo:", err);
-    alert("更新に失敗しました");
+    alert("編集に失敗しました");
   }
+}
+
+// 編集モーダルを閉じる
+function closeEditModal() {
+  editModal.style.display = "none";
+  editInput.value = "";
+  editingMemoId = null;
 }
 
 // メモ追加
