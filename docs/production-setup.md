@@ -15,8 +15,8 @@
 5. アプリケーションの種類：「ウェブアプリケーション」
 6. 名前：「shareNOTE Production」
 7. 承認済みの JavaScript オリジン：
-   - https://showin.bon-soleil.com
-   - http://showin-prod-frontend.s3-website-ap-northeast-1.amazonaws.com（初回デプロイ用）
+   - https://sharenote.bon-soleil.com
+   - http://sharenote-prod-frontend.s3-website-ap-northeast-1.amazonaws.com（初回デプロイ用）
 8. 作成して Client ID をコピー
 
 ## 2. 本番用 Alexa スキルの作成
@@ -68,13 +68,13 @@ npm run deploy:prod
 
 ```bash
 # スタック状態確認
-aws cloudformation describe-stacks --stack-name showin-prod
+aws cloudformation describe-stacks --stack-name sharenote-prod
 
 # Lambda関数確認
-aws lambda get-function --function-name showin-prod-handler
+aws lambda get-function --function-name sharenote-prod-handler
 
 # S3バケット確認
-aws s3 ls | grep showin-prod
+aws s3 ls | grep sharenote-prod
 ```
 
 ## 5. Alexa スキル設定の完了
@@ -85,7 +85,7 @@ aws s3 ls | grep showin-prod
 
    ```bash
    aws cloudformation describe-stacks \
-     --stack-name showin-prod \
+     --stack-name sharenote-prod \
      --query 'Stacks[0].Outputs[?OutputKey==`HandlerArn`].OutputValue' \
      --output text
    ```
@@ -98,7 +98,7 @@ aws s3 ls | grep showin-prod
 3. Lambda にトリガー追加：
    ```bash
    aws lambda add-permission \
-     --function-name showin-prod-handler \
+     --function-name sharenote-prod-handler \
      --statement-id alexa-skill-prod \
      --action lambda:InvokeFunction \
      --principal alexa-appkit.amazon.com \
@@ -109,7 +109,7 @@ aws s3 ls | grep showin-prod
 
 ### CloudFront ディストリビューション
 
-本番ドメイン（https://showin.bon-soleil.com）を使用する場合：
+本番ドメイン（https://sharenote.bon-soleil.com）を使用する場合：
 
 1. CloudFront ディストリビューションを作成
 2. S3 バケットをオリジンに設定
@@ -126,8 +126,8 @@ aws s3 ls | grep showin-prod
 
 ### Web UI
 
-1. https://showin.bon-soleil.com（設定済みの場合）
-2. http://showin-prod-frontend.s3-website-ap-northeast-1.amazonaws.com
+1. https://sharenote.bon-soleil.com（設定済みの場合）
+2. http://sharenote-prod-frontend.s3-website-ap-northeast-1.amazonaws.com
 
 ### Alexa スキル
 

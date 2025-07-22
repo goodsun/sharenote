@@ -85,15 +85,21 @@ export CDK_ENV=dev
 ```
 sharenote/
 ├── bin/
-│   └── sharenote.ts  # CDK app entry point
+│   └── sharenote.ts            # CDK app entry point
 ├── lib/
-│   └── sharenote-stack.ts # CDK stack definition
+│   ├── sharenote-stack.ts      # CDK stack definition
+│   └── sharenote-stack.WebApiHandler.ts # Web API Lambda
 ├── src/
-│   ├── handler.ts              # Lambda handler
+│   ├── handler.ts              # Alexa skill handler
 │   ├── services/
 │   │   └── memo-service.ts     # DynamoDB operations
-│   └── types/
-│       └── alexa-types.ts      # Type definitions
+│   └── web-api/
+│       └── amazon-search.ts    # Amazon product search
+├── public/                     # Web UI files
+│   ├── index.html
+│   ├── style.css
+│   ├── app.js
+│   └── amazon-smart-links.js  # Amazon ad display
 ├── test/
 ├── docs/                       # Complete documentation
 ├── cdk.json                    # CDK configuration
@@ -115,8 +121,8 @@ npm run build:frontend:prod     # Build for production
 
 # CDK operations
 cdk diff                        # Show changes
-cdk deploy sharenote-dev # Deploy to dev
-cdk destroy sharenote-dev # Clean up
+cdk deploy sharenote-dev        # Deploy to dev
+cdk destroy sharenote-dev       # Clean up
 ```
 
 ## 🎯 Success Metrics

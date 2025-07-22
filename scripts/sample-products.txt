@@ -1,0 +1,11 @@
+# Amazon商品URLとキーワードのサンプル
+# URLからASINを抽出
+https://www.amazon.co.jp/dp/B07T4LN3YC
+https://www.amazon.co.jp/dp/B084SV8N5Q
+https://www.amazon.co.jp/gp/product/B08R6QHPKY
+
+# キーワードから検索URLを生成
+トイレットペーパー
+洗剤
+シャンプー
+エコバッグ

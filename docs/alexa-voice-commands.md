@@ -232,7 +232,7 @@
 
 問題が解決しない場合:
 
-- Web UI (http://showin-dev-frontend.s3-website-ap-northeast-1.amazonaws.com) で同じ機能を試す
+- Web UI (http://sharenote-dev-frontend.s3-website-ap-northeast-1.amazonaws.com) で同じ機能を試す
 - スキルを無効にして再度有効にする
 - Alexa アプリでスキルの設定を確認する
 

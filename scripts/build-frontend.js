@@ -88,6 +88,24 @@ fs.writeFileSync(path.join(buildDir, 'app.js'), appJsContent);
 fs.writeFileSync(path.join(buildDir, 'index.html'), indexHtmlContent);
 fs.writeFileSync(path.join(buildDir, 'style.css'), fs.readFileSync('public/style.css', 'utf8'));
 
+
+// amazon-smart-links.jsをコピーしてAPI URLを置換
+const amazonSmartLinksSrc = path.join('public', 'amazon-smart-links.js');
+if (fs.existsSync(amazonSmartLinksSrc)) {
+  let amazonSmartLinksContent = fs.readFileSync(amazonSmartLinksSrc, 'utf8');
+  
+  // API_BASE_URLの設定を置換
+  amazonSmartLinksContent = amazonSmartLinksContent.replace(
+    /this\.API_BASE_URL = window\.location\.hostname === 'localhost'[\s\S]*?'';/,
+    `this.API_BASE_URL = window.location.hostname === 'localhost' 
+      ? 'http://localhost:3000' 
+      : '${apiUrl}';`
+  );
+  
+  fs.writeFileSync(path.join(buildDir, 'amazon-smart-links.js'), amazonSmartLinksContent);
+  console.log('   Copied and configured amazon-smart-links.js');
+}
+
 // favicon.icoをコピー
 const faviconSrc = path.join('public', 'favicon.ico');
 if (fs.existsSync(faviconSrc)) {

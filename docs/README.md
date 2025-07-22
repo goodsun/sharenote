@@ -49,7 +49,7 @@ cdk init app --language typescript
 
 ```bash
 cdk diff
-cdk deploy showin-dev
+cdk deploy sharenote-dev
 ```
 
 ## 🎯 Project Background
@@ -72,7 +72,7 @@ cdk deploy showin-dev
 ### 原典プロジェクト
 
 - **ideanotes**: [GitHub](https://github.com/flow-theory-x/ideanotes)
-- **設計プロセス**: ideanotes/services/showin/
+- **設計プロセス**: ideanotes/services/sharenote/
 - **方法論**: ideanotes/methodology/development-flow/
 
 ### 外部リソース

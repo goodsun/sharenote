@@ -14,7 +14,7 @@ This document captures lessons learned during the 共有手帳（shareNOTE） pr
 
 ```bash
 # Started with existing documentation
-showin/
+sharenote/
 ├── docs/           # Existing files
 ├── CLAUDE.md       # Existing files
 ├── LICENSE         # Existing files
@@ -28,8 +28,8 @@ showin/
 
 ```bash
 # 1. Start with empty directory
-mkdir showin
-cd showin
+mkdir sharenote
+cd sharenote
 
 # 2. CDK initialization first
 cdk init app --language typescript
@@ -40,7 +40,7 @@ git add .
 git commit -m "Initial CDK project setup"
 
 # 4. Remote repository creation
-gh repo create showin --public
+gh repo create sharenote --public
 git remote add origin <repo-url>
 git push -u origin main
 
@@ -75,7 +75,7 @@ git commit -m "Add project documentation"
 git reset --soft HEAD~1
 
 # Ended up with duplicate directory structures
-showin/
+sharenote/
 ├── cdk-project/    # Duplicate!
 │   ├── docs/
 │   └── bin/
@@ -196,7 +196,7 @@ cdk.out/
 "name": "cdk-project"
 
 # ✅ Specific, meaningful names
-"name": "showin"
+"name": "sharenote"
 ```
 
 ### 4. **Missing Environment Variables**

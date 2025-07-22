@@ -38,7 +38,7 @@ Alexa Developer Console でプライバシーポリシーと利用規約の URL 
 API Gateway で独自ドメインからのアクセスを許可：
 
 ```typescript
-// lib/showin-stack.ts
+// lib/sharenote-stack.ts
 defaultCorsPreflightOptions: {
   allowOrigins: [
     'http://localhost:8080',

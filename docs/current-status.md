@@ -21,21 +21,21 @@ Account: 498997347996
 Region: ap-northeast-1
 Environment: dev
 
-CloudFormation Stack: showin-dev
-├── DynamoDB Table: showin-dev-memos
+CloudFormation Stack: sharenote-dev
+├── DynamoDB Table: sharenote-dev-memos
 │   ├── Items: 1件（テストデータ）
 │   ├── Billing: On-demand
 │   ├── GSI: family-timestamp-index, family-updatedAt-index
 │   └── Encryption: AWS Managed
-├── Lambda Function: showin-dev-handler
+├── Lambda Function: sharenote-dev-handler
 │   ├── Runtime: Node.js 20.x
 │   ├── Memory: 256MB
 │   ├── Timeout: 30s
 │   └── Environment Variables: 3個設定済み (TABLE_NAME, USERS_TABLE_NAME, INVITE_CODES_TABLE_NAME)
-├── IAM Role: showin-dev-lambda-role
+├── IAM Role: sharenote-dev-lambda-role
 │   ├── Basic Execution Role
 │   └── DynamoDB Read/Write permissions
-└── CloudWatch LogGroup: /aws/lambda/showin-dev-handler
+└── CloudWatch LogGroup: /aws/lambda/sharenote-dev-handler
     └── Retention: 7 days
 ```
 
@@ -103,8 +103,8 @@ src/
 └── package.json              ✅ 依存関係設定完了
 
 lib/
-├── showin-stack.ts              ✅ CDKスタック（GSI最適化済み）
-└── showin-stack.WebApiHandler.ts ✅ Web API
+├── sharenote-stack.ts              ✅ CDKスタック（GSI最適化済み）
+└── sharenote-stack.WebApiHandler.ts ✅ Web API
 
 public/
 ├── index.html         ✅ Web UI（家族機能完全実装）
@@ -117,12 +117,12 @@ scripts/
 └── fix-family-integration.js ✅ 家族機能修正
 
 test/
-├── showin.test.ts  ✅ CDKスタックテスト
+├── sharenote.test.ts  ✅ CDKスタックテスト
 ├── memo-service.test.ts      ✅ メモサービステスト
 └── user-service.test.ts      ✅ ユーザーサービステスト
 
 bin/
-└── showin.ts        ✅ CDKアプリ完了
+└── sharenote.ts        ✅ CDKアプリ完了
 ```
 
 ## 🧪 テスト実行記録
@@ -173,7 +173,7 @@ bin/
 
 ```json
 {
-  "TableName": "showin-dev-memos",
+  "TableName": "sharenote-dev-memos",
   "KeySchema": [
     { "AttributeName": "userId", "KeyType": "HASH" },
     { "AttributeName": "memoId", "KeyType": "RANGE" }

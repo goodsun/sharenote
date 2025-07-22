@@ -66,9 +66,9 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
 #### Deployment
 
 - **Environment**: AWS ap-northeast-1
-- **Stack**: showin-dev
-- **Lambda ARN**: arn:aws:lambda:ap-northeast-1:498997347996:function:showin-dev-handler
-- **DynamoDB Table**: showin-dev-memos
+- **Stack**: sharenote-dev
+- **Lambda ARN**: arn:aws:lambda:ap-northeast-1:498997347996:function:sharenote-dev-handler
+- **DynamoDB Table**: sharenote-dev-memos
 
 ### Development Metrics
 
@@ -112,6 +112,6 @@ Special mention for achieving **"Exaggerated Progress Reports"** - where optimis
 
 ---
 
-_Project: showin_
+_Project: sharenote_
 _Methodology: ideanotes スモールスタート原則_
 _Status: Production Ready_ ✅

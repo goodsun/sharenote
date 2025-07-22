@@ -847,7 +847,7 @@ async function loadMemos() {
 }
 
 // メモ表示
-function renderMemos() {
+async function renderMemos() {
   memoList.innerHTML = "";
 
   if (memos.length === 0) {
@@ -857,10 +857,52 @@ function renderMemos() {
 
   emptyState.style.display = "none";
 
-  memos.forEach((memo) => {
-    const memoElement = createMemoElement(memo);
+  // Amazon Smart Links モジュールの初期化
+  const amazonSmartLinks = window.AmazonSmartLinks ? new window.AmazonSmartLinks() : null;
+  
+  // まずメモを全て表示
+  for (let i = 0; i < memos.length; i++) {
+    const memoElement = createMemoElement(memos[i]);
     memoList.appendChild(memoElement);
-  });
+  }
+  
+  // 広告は非同期で後から挿入
+  if (amazonSmartLinks) {
+    // 広告挿入位置を記録（上下4つチェック用）
+    const adPositions = [];
+    
+    for (let i = 0; i < memos.length; i++) {
+      // 削除済みメモはスキップ
+      if (memos[i].deleted) {
+        continue;
+      }
+      
+      // 非同期で広告を取得・挿入
+      (async (index) => {
+        const adElement = await amazonSmartLinks.createSmartLinkElement([memos[index]], index);
+        if (adElement) {
+          // 上下4つ以内に既に広告があるかチェック
+          const nearbyAd = adPositions.some(pos => Math.abs(pos - index) <= 4);
+          if (nearbyAd) {
+            console.log(`Skipping ad at position ${index}: too close to another ad`);
+            return;
+          }
+          
+          // 対応するメモの前に広告を挿入
+          const memoElements = memoList.querySelectorAll('.memo-item:not(.ad-item)');
+          if (memoElements[index]) {
+            memoList.insertBefore(adElement, memoElements[index]);
+            adPositions.push(index);
+            
+            // 広告要素にもスワイプ機能を追加
+            setupSwipeToDelete(adElement, adElement.dataset.memoId, false);
+            
+            console.log(`Ad inserted at position ${index}, ad positions:`, adPositions);
+          }
+        }
+      })(i);
+    }
+  }
 }
 
 // メモ要素作成
@@ -1024,7 +1066,12 @@ function setupSwipeToDelete(element, memoId, isDeleted) {
   const deleteBtn = element.querySelector(".delete-btn");
   deleteBtn.addEventListener("click", async (e) => {
     e.stopPropagation();
-    await deleteMemo(memoId);
+    // 広告の場合は非表示、通常のメモの場合は削除
+    if (element.classList.contains("ad-item")) {
+      element.style.display = "none";
+    } else {
+      await deleteMemo(memoId);
+    }
   });
 
   // 復元ボタンクリック（削除済みの場合のみ）
@@ -1037,10 +1084,12 @@ function setupSwipeToDelete(element, memoId, isDeleted) {
   } else {
     // 編集ボタンクリック（通常メモの場合のみ）
     const editBtn = element.querySelector(".edit-btn");
-    editBtn.addEventListener("click", async (e) => {
-      e.stopPropagation();
-      await editMemo(memoId);
-    });
+    if (editBtn && !element.classList.contains("ad-item")) {
+      editBtn.addEventListener("click", async (e) => {
+        e.stopPropagation();
+        await editMemo(memoId);
+      });
+    }
   }
 }
 

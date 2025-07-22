@@ -252,18 +252,18 @@ async function handleLaunchRequest(userId: string): Promise<AlexaResponse> {
   try {
     const memos = await memoService.getActiveMemos(userId);
     const memoCount = memos.length;
-    
+
     let welcomeMessage = "共有手帳へようこそ。";
-    
+
     if (memoCount === 0) {
       // 初回利用者向けの詳しい説明
-      welcomeMessage += "初めてのご利用ですね。共有手帳では、メモの追加、読み上げ、削除ができます。例えば「牛乳を追加」と言ってみてください。";
+      welcomeMessage +=
+        "初めてのご利用ですね。共有手帳では、メモの追加、読み上げ、削除ができます。例えば「牛乳を追加」と言ってみてください。";
     } else if (memoCount === 1) {
       welcomeMessage += `現在1件のメモがあります。`;
     } else {
       welcomeMessage += `現在${memoCount}件のメモがあります。`;
     }
-    
     return buildResponse(welcomeMessage, false);
   } catch (error) {
     console.error("Launch request error:", error);

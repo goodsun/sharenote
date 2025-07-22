@@ -24,24 +24,24 @@ _実行日: 2025-07-12 01:00-01:17 JST_
 
 ```typescript
 // 実装完了項目
-✅ DynamoDBテーブル: showin-dev-memos
+✅ DynamoDBテーブル: sharenote-dev-memos
    - パーティション/ソートキー設計
    - Global Secondary Index x2
    - オンデマンド課金
    - 暗号化有効
 
-✅ Lambda関数: showin-dev-handler
+✅ Lambda関数: sharenote-dev-handler
    - Node.js 20.x
    - 256MB メモリ
    - 30秒タイムアウト
    - 環境変数設定
 
-✅ IAMロール: showin-dev-lambda-role
+✅ IAMロール: sharenote-dev-lambda-role
    - 最小権限原則
    - DynamoDB読み書き権限
    - CloudWatch Logs権限
 
-✅ CloudWatch Logs: /aws/lambda/showin-dev-handler
+✅ CloudWatch Logs: /aws/lambda/sharenote-dev-handler
    - 構造化ログ
    - 7日間保持（dev環境）
 ```
@@ -91,14 +91,14 @@ _実行日: 2025-07-12 01:00-01:17 JST_
 ### AWS リソース確認
 
 ```bash
-✅ CloudFormation Stack: showin-dev
+✅ CloudFormation Stack: sharenote-dev
    Status: CREATE_COMPLETE
 
-✅ DynamoDB Table: showin-dev-memos
+✅ DynamoDB Table: sharenote-dev-memos
    Status: ACTIVE
    Items: 1件のテストデータ確認済み
 
-✅ Lambda Function: showin-dev-handler
+✅ Lambda Function: sharenote-dev-handler
    Status: Active
    Runtime: nodejs20.x
    Last Modified: 2025-07-12T16:17:12
@@ -283,4 +283,4 @@ Cannot find module '@aws-sdk/client-dynamodb'
 
 _報告者: Claude Code
 作成日時: 2025-07-12 01:17 JST
-プロジェクト: showin_
+プロジェクト: sharenote_

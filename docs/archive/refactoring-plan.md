@@ -10,7 +10,7 @@
 
 ### 1. コード重複
 
-- **UserService**: `src/user-service.ts`と`lib/showin-stack.UserService.ts`に重複
+- **UserService**: `src/user-service.ts`と`lib/sharenote-stack.UserService.ts`に重複
 - **影響**: 変更時に 2 箇所の更新が必要、バグの温床
 
 ### 2. 不要なリソース
@@ -42,11 +42,11 @@ mkdir -p src/common/config
 
 #### 1.2 UserService の統合
 
-1. `lib/showin-stack.UserService.ts`を`src/common/services/user-service.ts`に移動
+1. `lib/sharenote-stack.UserService.ts`を`src/common/services/user-service.ts`に移動
 2. `src/user-service.ts`を削除
 3. インポートパスを更新
    - `src/memo-service.ts`: `./user-service` → `./common/services/user-service`
-   - `lib/showin-stack.WebApiHandler.ts`: `./showin-stack.UserService` → `../src/common/services/user-service`
+   - `lib/sharenote-stack.WebApiHandler.ts`: `./sharenote-stack.UserService` → `../src/common/services/user-service`
 
 #### 1.3 設定の外部化
 

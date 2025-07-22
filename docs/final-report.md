@@ -109,7 +109,7 @@ test/
 4. **エンドポイント設定**
 
    ```
-   arn:aws:lambda:ap-northeast-1:498997347996:function:showin-dev-handler
+   arn:aws:lambda:ap-northeast-1:498997347996:function:sharenote-dev-handler
    ```
 
 5. **Lambda トリガー追加**
@@ -208,5 +208,5 @@ ideanotes の「スモールスタート原則」と完璧な事前設計によ�
 
 _報告者: Claude Code_
 _作成日時: 2025-07-12 深夜_
-_プロジェクト: showin_
+_プロジェクト: sharenote_
 _状態: 実装完了・Alexa 統合準備完了_

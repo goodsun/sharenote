@@ -6,7 +6,6 @@
 
 共有手帳（shareNOTE）は、日本の教育理念と家族文化を現代のテクノロジーで再解釈したサービスです。音声という最も人間的なインターフェースを通じて、家族の知恵と想いを記録し、世代を超えて継承していきます。
 
-
 詳細なコンセプトは[CONCEPT.md](docs/CONCEPT.md)をご覧ください。
 
 ## 🎯 開発ステータス
@@ -71,8 +70,8 @@ aws configure
 
 ```bash
 # リポジトリのクローン
-git clone https://github.com/your-username/showin.git
-cd showin
+git clone https://github.com/your-username/sharenote.git
+cd sharenote
 
 # 依存関係インストール
 npm install
@@ -107,7 +106,7 @@ cdk bootstrap aws://${CDK_ACCOUNT}/${CDK_REGION}
    - 名前: `共有手帳（shareNOTE） Web`
    - 承認済みの JavaScript 生成元:
      - `http://localhost:8080` （開発用）
-     - `http://showin-dev-frontend.s3-website-ap-northeast-1.amazonaws.com` （S3 開発環境）
+     - `http://sharenote-dev-frontend.s3-website-ap-northeast-1.amazonaws.com` （S3 開発環境）
      - `https://your-domain.com` （本番用）
 6. **作成** をクリックしてクライアント ID を取得
 
@@ -142,7 +141,7 @@ export CDK_ENV=dev
 npm run deploy
 
 # デプロイ出力からLambda ARNをコピー
-# 例: arn:aws:lambda:ap-northeast-1:123456789012:function:showin-dev-handler
+# 例: arn:aws:lambda:ap-northeast-1:123456789012:function:sharenote-dev-handler
 
 # フロントエンドビルド（環境別）
 npm run build:frontend:dev   # 開発環境
@@ -189,7 +188,7 @@ npm run deploy:frontend
 
 ```bash
 # Lambda関数テスト
-aws lambda invoke --function-name showin-dev-handler \
+aws lambda invoke --function-name sharenote-dev-handler \
   --payload file://test/fixtures/test-add-memo.json \
   test/responses/response.json
 ```
@@ -197,40 +196,34 @@ aws lambda invoke --function-name showin-dev-handler \
 ## 📁 プロジェクト構造
 
 ```
-showin/
+sharenote/
 ├── src/                    # Lambda ソースコード
 │   ├── handler.ts         # Alexaスキルハンドラー
-│   ├── memo-service.ts    # DynamoDB操作
-│   └── common/            # 共通コード
-│       ├── services/      # 共通サービス
-│       │   └── user-service.ts
-│       ├── types/         # 型定義
-│       └── config/        # 設定
-│           └── constants.ts
+│   ├── services/          # サービス層
+│   │   └── memo-service.ts # DynamoDB操作
+│   └── web-api/           # Web API関連
+│       └── amazon-search.ts # Amazon商品検索
 ├── lib/                    # CDK インフラ定義
-│   ├── showin-stack.ts
-│   └── showin-stack.WebApiHandler.ts # Web API
+│   ├── sharenote-stack.ts # メインスタック
+│   └── sharenote-stack.WebApiHandler.ts # Web API
 ├── public/                 # Web UI
 │   ├── index.html
-│   ├── styles.css
-│   └── app.js
+│   ├── style.css
+│   ├── app.js
+│   └── amazon-smart-links.js # Amazon広告表示
 ├── scripts/                # 運用スクリプト
 │   ├── build-frontend.js
 │   ├── build-web-api.js
-│   └── fix-family-integration.js
-├── test/
-│   ├── memo-service.test.ts
-│   ├── user-service.test.ts
+│   └── deploy-simple.sh
+├── test/                   # テスト
 │   ├── fixtures/          # テスト入力データ
 │   └── responses/         # テスト実行結果
 ├── docs/                   # プロジェクトドキュメント
-│   ├── current-status.md
-│   ├── cdk-specification.md
-│   ├── refactoring-plan.md
-│   └── lessons-learned/
-│       └── family-sharing-debug.md
+│   ├── architecture.md
+│   ├── development-guide.md
+│   └── deployment-guide.md
 └── bin/                    # CDK エントリーポイント
-    └── showin.ts
+    └── sharenote.ts
 ```
 
 ## 🛠️ 開発コマンド
@@ -257,19 +250,19 @@ cdk destroy            # リソース削除
 
 ```bash
 # メモ追加テスト
-aws lambda invoke --function-name showin-dev-handler \
+aws lambda invoke --function-name sharenote-dev-handler \
   --payload file://test/fixtures/test-add-memo.json \
   test/responses/add-memo.json
 
 # メモ読み上げテスト
-aws lambda invoke --function-name showin-dev-handler \
+aws lambda invoke --function-name sharenote-dev-handler \
   --payload file://test/fixtures/test-read-memos.json \
   test/responses/read-memos.json
 ```
 
 ## 🗄️ データベース構造
 
-### DynamoDB テーブル: `showin-dev-memos`
+### DynamoDB テーブル: `sharenote-dev-memos`
 
 ```json
 {
@@ -408,7 +401,7 @@ graph TB
 2. **Lambda 実行エラー**: CloudWatch Logs を確認
 
    ```bash
-   aws logs tail /aws/lambda/showin-dev-handler --follow
+   aws logs tail /aws/lambda/sharenote-dev-handler --follow
    ```
 
 3. **DynamoDB アクセスエラー**: IAM ロール権限確認
@@ -437,7 +430,7 @@ MIT License - 詳細は [LICENSE](LICENSE) ファイルを参照
 
 ---
 
-**Project**: showin
+**Project**: sharenote
 **Created**: 2025-07-12
 **Methodology**: [ideanotes](https://github.com/flow-theory-x/ideanotes) スモールスタート原則
 **Status**: 全機能実装完了 ✅

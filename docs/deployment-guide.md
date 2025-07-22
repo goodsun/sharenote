@@ -355,7 +355,7 @@ describe("Smoke Tests", () => {
 
   beforeAll(() => {
     // Set environment-specific configuration
-    process.env.MEMO_TABLE_NAME = `showin-${environment}-memos`;
+    process.env.MEMO_TABLE_NAME = `sharenote-${environment}-memos`;
     process.env.ENVIRONMENT = environment;
   });
 
@@ -544,7 +544,7 @@ echo $(aws lambda invoke --function-name sharenote-${CDK_ENV}-handler --log-type
 - [ ] Smoke tests passed
 - [ ] Health checks passing
 - [ ] Metrics looking normal
-- [ ] Logs showing expected activity
+- [ ] Logs sharenoteg expected activity
 - [ ] No error alerts triggered
 - [ ] Documentation updated with new version
 

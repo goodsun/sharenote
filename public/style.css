@@ -1,3 +1,13 @@
+/* フォント定義 */
+@font-face {
+  font-family: "Tsukushi B Round Gothic";
+  font-style: normal;
+  font-weight: 600;
+  font-display: swap;
+  src: url("/fonts/TsukushiBMaruGothic.woff2") format("woff2"),
+    url("/fonts/TsukushiBMaruGothic.woff") format("woff");
+}
+
 /* リセットとベース */
 * {
   margin: 0;
@@ -41,8 +51,9 @@ header {
 
 header h1 {
   font-size: 20px;
-  font-weight: 600;
-  font-family: "Hiragino Sans", "Yu Gothic", sans-serif;
+  font-weight: 700;
+  font-family: "Tsukushi B Round Gothic", "M PLUS Rounded 1c", "筑紫B丸ゴシック",
+    "Hiragino Sans", "Yu Gothic", sans-serif;
 }
 
 .header-right {
@@ -454,7 +465,7 @@ header h1 {
 
 .delete-btn {
   position: absolute;
-  right: -78px;
+  right: -81px;
   top: 0;
   bottom: 0;
   width: 80px;
@@ -492,7 +503,7 @@ header h1 {
 
 .edit-btn {
   position: absolute;
-  left: -78px;
+  left: -81px;
   top: 0;
   bottom: 0;
   width: 80px;
@@ -587,7 +598,7 @@ header h1 {
   }
 
   header h1 {
-    font-size: 15px;
+    font-size: 18px;
   }
 
   .memo-list {
@@ -1101,6 +1112,9 @@ header h1 {
   color: #0e2246;
   margin-bottom: 10px;
   font-size: 32px;
+  font-family: "Tsukushi B Round Gothic", "M PLUS Rounded 1c", "筑紫B丸ゴシック",
+    "Hiragino Sans", "Yu Gothic", sans-serif;
+  font-weight: 700;
 }
 
 .login-content p {

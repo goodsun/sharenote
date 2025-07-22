@@ -70,7 +70,7 @@ app.get("/terms-of-use", (req, res) => {
 
 // ヘルスチェック
 app.get("/health", (req, res) => {
-  res.json({ status: "ok", service: "showin-web" });
+  res.json({ status: "ok", service: "sharenote-web" });
 });
 
 // Root page (スキル情報)
@@ -122,7 +122,7 @@ export const router = async (event: any, context: any) => {
 #### 3.1 API Gateway 追加
 
 ```typescript
-// lib/showin-stack.ts に追加
+// lib/sharenote-stack.ts に追加
 
 import * as apigateway from "aws-cdk-lib/aws-apigateway";
 
@@ -156,7 +156,7 @@ api.root.addResource("health").addMethod("GET", lambdaIntegration);
 
 // カスタムドメイン（オプション）
 // const domain = api.addDomainName('CustomDomain', {
-//   domainName: 'showin.your-domain.com',
+//   domainName: 'sharenote.your-domain.com',
 //   certificate: certificate,
 // });
 
@@ -364,7 +364,7 @@ touch router.ts
 
 ```bash
 # 5. CDKスタック更新
-# lib/showin-stack.ts を編集
+# lib/sharenote-stack.ts を編集
 
 # 6. デプロイ
 npm run build
@@ -403,8 +403,8 @@ curl https://your-api-gateway-url/health
 "privacyAndCompliance": {
   "locales": {
     "ja-JP": {
-      "privacyPolicyUrl": "https://flow-theory-x.github.io/showin/privacy-policy",
-      "termsOfUseUrl": "https://flow-theory-x.github.io/showin/terms-of-use"
+      "privacyPolicyUrl": "https://flow-theory-x.github.io/sharenote/privacy-policy",
+      "termsOfUseUrl": "https://flow-theory-x.github.io/sharenote/terms-of-use"
     }
   }
 }

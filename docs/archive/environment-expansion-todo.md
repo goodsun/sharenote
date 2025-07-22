@@ -41,13 +41,13 @@ Future: Add Production Environment 🎯
   ```bash
   export CDK_ENV=stg
   cdk bootstrap --profile staging-profile  # if different account
-  cdk deploy showin-stg
+  cdk deploy sharenote-stg
   ```
 
 - [ ] **Verify infrastructure**
-  - [ ] DynamoDB table: `showin-stg-memos` created
-  - [ ] Lambda function: `showin-stg-handler` deployed
-  - [ ] CloudWatch logs: `/aws/lambda/showin-stg-handler` active
+  - [ ] DynamoDB table: `sharenote-stg-memos` created
+  - [ ] Lambda function: `sharenote-stg-handler` deployed
+  - [ ] CloudWatch logs: `/aws/lambda/sharenote-stg-handler` active
   - [ ] IAM roles and permissions working
 
 ### Alexa Integration
@@ -145,7 +145,7 @@ Future: Add Production Environment 🎯
   ```bash
   export CDK_ENV=prod
   cdk bootstrap --profile production
-  cdk deploy showin-prod
+  cdk deploy sharenote-prod
   ```
 
 - [ ] **Backup & Recovery**
@@ -218,7 +218,7 @@ export CDK_ENV=stg
 cp .env.dev .env.stg
 
 # 2. Deploy infrastructure
-cdk deploy showin-stg
+cdk deploy sharenote-stg
 
 # 3. Test deployment
 npm test -- --testNamePattern="smoke"
@@ -240,13 +240,13 @@ cp .env.dev .env.prod
 # Edit .env.prod with production settings
 
 # 3. Deploy infrastructure
-cdk deploy showin-prod
+cdk deploy sharenote-prod
 
 # 4. Verify deployment
 npm run test:smoke -- --env prod
 
 # 5. Enable monitoring
-aws cloudwatch put-dashboard --dashboard-name showin-prod
+aws cloudwatch put-dashboard --dashboard-name sharenote-prod
 ```
 
 ## ⚠️ Important Considerations

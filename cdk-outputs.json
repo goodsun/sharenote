@@ -1,0 +1,11 @@
+{
+  "sharenote-dev": {
+    "TableName": "sharenote-dev-memos",
+    "FrontendBucketName": "sharenote-dev-frontend",
+    "LambdaFunctionArn": "arn:aws:lambda:ap-northeast-1:498997347996:function:sharenote-dev-handler",
+    "WebApiEndpoint2F9A11A4": "https://11yih81024.execute-api.ap-northeast-1.amazonaws.com/dev/",
+    "WebApiUrl": "https://11yih81024.execute-api.ap-northeast-1.amazonaws.com/dev/",
+    "LambdaFunctionName": "sharenote-dev-handler",
+    "FrontendUrl": "http://sharenote-dev-frontend.s3-website-ap-northeast-1.amazonaws.com"
+  }
+}

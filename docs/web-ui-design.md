@@ -27,9 +27,9 @@
 
 ### URL 設計
 
-- `https://showin.example.com/` - 静的 HTML（S3）
-- `https://showin.example.com/api/memos` - API（API Gateway）
-- `https://showin.example.com/api/memos/:id` - API（API Gateway）
+- `https://sharenote.example.com/` - 静的 HTML（S3）
+- `https://sharenote.example.com/api/memos` - API（API Gateway）
+- `https://sharenote.example.com/api/memos/:id` - API（API Gateway）
 
 ## 📊 データモデル
 

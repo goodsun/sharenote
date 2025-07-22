@@ -12,6 +12,7 @@ import serverlessExpress from "@codegenie/serverless-express";
 import { createHash } from "crypto";
 import express, { Request, Response, NextFunction } from "express";
 import { EncryptionUtil } from "../src/common/utils/encryption";
+import { searchAndExtractASIN } from "../src/web-api/amazon-search";
 
 const app = express();
 app.use(express.json());
@@ -721,6 +722,86 @@ app.put("/api/user/name", verifyGoogleToken, async (req: any, res: Response) => 
   } catch (error) {
     console.error("Error updating user name:", error);
     res.status(500).json({ error: "名前の変更に失敗しました" });
+  }
+});
+
+// POST /api/amazon/search - Amazon商品検索
+app.post("/api/amazon/search", verifyGoogleToken, async (req: any, res: Response) => {
+  try {
+    const { keyword } = req.body;
+    
+    if (!keyword) {
+      res.status(400).json({ error: "キーワードが指定されていません" });
+      return;
+    }
+
+    console.log(`Amazon search request for: ${keyword}`);
+    
+    // キャッシュをチェック
+    const cacheTableName = process.env.AMAZON_CACHE_TABLE_NAME;
+    if (cacheTableName) {
+      try {
+        const cacheResult = await docClient.send(
+          new GetCommand({
+            TableName: cacheTableName,
+            Key: { keyword },
+          })
+        );
+        
+        if (cacheResult.Item) {
+          console.log(`Cache hit for keyword: ${keyword}`);
+          res.json({
+            ...cacheResult.Item,
+            fromCache: true,
+            found: true
+          });
+          return;
+        }
+      } catch (cacheError) {
+        console.error("Cache read error:", cacheError);
+        // キャッシュエラーは無視して処理を続行
+      }
+    }
+    
+    // Amazon検索を実行
+    const result = await searchAndExtractASIN(keyword);
+    
+    if (result) {
+      // キャッシュに保存（TTL: 1日後）
+      if (cacheTableName) {
+        try {
+          const ttl = Math.floor(Date.now() / 1000) + 86400; // 1日後
+          await docClient.send(
+            new PutCommand({
+              TableName: cacheTableName,
+              Item: {
+                ...result,
+                ttl,
+              },
+            })
+          );
+          console.log(`Cached result for keyword: ${keyword}`);
+        } catch (cacheError) {
+          console.error("Cache write error:", cacheError);
+          // キャッシュエラーは無視
+        }
+      }
+      
+      res.json({
+        ...result,
+        found: true
+      });
+    } else {
+      res.status(404).json({ 
+        keyword,
+        found: false,
+        error: "商品が見つかりませんでした" 
+      });
+    }
+    
+  } catch (error) {
+    console.error("Amazon search error:", error);
+    res.status(500).json({ error: "サーバーエラーが発生しました" });
   }
 });
 

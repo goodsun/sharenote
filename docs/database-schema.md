@@ -11,7 +11,7 @@
 
 メモデータを保存するメインテーブル
 
-**Table Name**: `showin-${environment}-memos`
+**Table Name**: `sharenote-${environment}-memos`
 
 **Primary Key**:
 
@@ -54,7 +54,7 @@
 
 ユーザー情報と家族関係を管理
 
-**Table Name**: `showin-${environment}-users`
+**Table Name**: `sharenote-${environment}-users`
 
 **Primary Key**:
 
@@ -93,7 +93,7 @@
 
 家族招待コードを管理（5 分間有効）
 
-**Table Name**: `showin-${environment}-invite-codes`
+**Table Name**: `sharenote-${environment}-invite-codes`
 
 **Primary Key**:
 
@@ -221,11 +221,11 @@ Check if not expired and not used
 ```bash
 # バックアップ
 aws dynamodb create-backup \
-  --table-name showin-prod-memos \
+  --table-name sharenote-prod-memos \
   --backup-name memo-backup-$(date +%Y%m%d)
 
 # リストア
 aws dynamodb restore-table-from-backup \
-  --target-table-name showin-prod-memos-restored \
+  --target-table-name sharenote-prod-memos-restored \
   --backup-arn arn:aws:dynamodb:...
 ```

@@ -20,16 +20,16 @@
 
 ### 1. CDK スタック名
 
-- **現在**: `showin-{env}`
-- **変更案**: `showin-alexa-memo-{env}`
+- **現在**: `sharenote-{env}`
+- **変更案**: `sharenote-alexa-memo-{env}`
 - **影響**:
   - 新しいスタックの作成が必要
   - 既存スタックからのデータ移行が必要
 
 ### 2. DynamoDB テーブル
 
-- **現在**: `showin-{env}`
-- **変更案**: `showin-memo-{env}`
+- **現在**: `sharenote-{env}`
+- **変更案**: `sharenote-memo-{env}`
 - **影響**:
   - データ移行スクリプトが必要
   - ダウンタイムの可能性
@@ -37,25 +37,25 @@
 ### 3. Lambda 関数
 
 - **現在**:
-  - `showin-{env}-AlexaSkillHandler`
-  - `showin-{env}-WebApiHandler`
+  - `sharenote-{env}-AlexaSkillHandler`
+  - `sharenote-{env}-WebApiHandler`
 - **変更案**:
-  - `showin-{env}-AlexaSkillHandler`
-  - `showin-{env}-WebApiHandler`
+  - `sharenote-{env}-AlexaSkillHandler`
+  - `sharenote-{env}-WebApiHandler`
 - **影響**: Alexa スキル設定の更新が必要
 
 ### 4. S3 バケット（フロントエンド）
 
-- **現在**: `showin-{env}-frontend`
-- **変更案**: `showin-{env}-frontend`
+- **現在**: `sharenote-{env}-frontend`
+- **変更案**: `sharenote-{env}-frontend`
 - **影響**:
   - カスタムドメインの再設定
   - CloudFront ディストリビューションの更新
 
 ### 5. API Gateway
 
-- **現在**: `showin-{env}-api`
-- **変更案**: `showin-{env}-api`
+- **現在**: `sharenote-{env}-api`
+- **変更案**: `sharenote-{env}-api`
 - **影響**:
   - API エンドポイント URL の変更
   - フロントエンドの設定更新が必要
@@ -71,7 +71,7 @@
 
 ### Phase 2: 並行稼働（2 週間）
 
-1. [ ] 新スタック（showin）のデプロイ
+1. [ ] 新スタック（sharenote）のデプロイ
 2. [ ] データの同期メカニズム実装
 3. [ ] 新旧両方のエンドポイントを有効化
 4. [ ] ユーザーへの移行通知
@@ -124,11 +124,11 @@
 
 2. **内部名は維持**:
 
-   - AWS リソース名は`showin`のまま
+   - AWS リソース名は`sharenote`のまま
    - API エンドポイントも変更なし
 
 3. **新規ドメイン追加**:
-   - `showin.example.com`を追加
+   - `sharenote.example.com`を追加
    - 既存の`memo.example.com`も維持
 
 この方法により、技術的なリスクを最小限に抑えながら、ブランド変更を実現できます。

@@ -67,6 +67,18 @@ export class ShareNoteStack extends cdk.Stack {
         : cdk.RemovalPolicy.DESTROY,
     });
 
+    // DynamoDB Table for Amazon Search Cache
+    const amazonCacheTable = new dynamodb.Table(this, 'AmazonCacheTable', {
+      tableName: `${projectName}-${environment}-amazon-cache`,
+      partitionKey: { name: 'keyword', type: dynamodb.AttributeType.STRING },
+      billingMode: dynamodb.BillingMode.PAY_PER_REQUEST,
+      encryption: dynamodb.TableEncryption.AWS_MANAGED,
+      timeToLiveAttribute: 'ttl', // 自動削除用（1日後）
+      removalPolicy: environment === 'prod' 
+        ? cdk.RemovalPolicy.RETAIN 
+        : cdk.RemovalPolicy.DESTROY,
+    });
+
     // IAM Role for Lambda
     this.alexaRole = new iam.Role(this, 'LambdaRole', {
       roleName: `${projectName}-${environment}-lambda-role`,
@@ -138,6 +150,7 @@ export class ShareNoteStack extends cdk.Stack {
         MEMO_TABLE_NAME: this.memoTable.tableName,
         USER_TABLE_NAME: userTable.tableName,
         INVITE_CODE_TABLE_NAME: inviteCodeTable.tableName,
+        AMAZON_CACHE_TABLE_NAME: amazonCacheTable.tableName,
         BUILD_TIME: new Date().toISOString(),
         CDK_ENV: environment,
         ENCRYPTION_KEY: process.env[`ENCRYPTION_KEY_${environment.toUpperCase()}`] || process.env.ENCRYPTION_KEY || 'default-encryption-key-for-dev',
@@ -148,6 +161,7 @@ export class ShareNoteStack extends cdk.Stack {
     this.memoTable.grantReadWriteData(webApiHandler);
     userTable.grantReadWriteData(webApiHandler);
     inviteCodeTable.grantReadWriteData(webApiHandler);
+    amazonCacheTable.grantReadWriteData(webApiHandler);
 
     // API Gateway for Web UI
     const webApi = new apigateway.RestApi(this, 'WebApi', {
@@ -213,6 +227,11 @@ export class ShareNoteStack extends cdk.Stack {
     // PUT /api/user/name - 名前変更
     const nameResource = userResource.addResource('name');
     nameResource.addMethod('PUT', new apigateway.LambdaIntegration(webApiHandler));
+    
+    // Amazon search endpoint
+    const amazonResource = apiResource.addResource('amazon');
+    const searchResource = amazonResource.addResource('search');
+    searchResource.addMethod('POST', new apigateway.LambdaIntegration(webApiHandler));
     
     // GET /api/version - ビルド情報
     const versionResource = apiResource.addResource('version');

@@ -92,7 +92,7 @@ The Lambda function has been updated to support account linking:
 ```bash
 # Build and deploy
 npm run build
-cdk deploy showin-dev
+cdk deploy sharenote-dev
 ```
 
 Key changes:
