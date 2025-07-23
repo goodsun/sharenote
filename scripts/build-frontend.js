@@ -152,6 +152,16 @@ if (fs.existsSync(iconsSrcDir)) {
   console.log(`   Copied ${iconFiles.length} icon files`);
 }
 
+// policy.htmlとterms.htmlをコピー
+const htmlFiles = ['policy.html', 'terms.html'];
+htmlFiles.forEach(file => {
+  const htmlSrc = path.join('public', file);
+  if (fs.existsSync(htmlSrc)) {
+    fs.copyFileSync(htmlSrc, path.join(buildDir, file));
+    console.log(`   Copied ${file}`);
+  }
+});
+
 console.log(`✅ Frontend built successfully to ${buildDir}/`);
 console.log(`   Environment: ${env}`);
 console.log(`   API URL: ${apiUrl}`);
